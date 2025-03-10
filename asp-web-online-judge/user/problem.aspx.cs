@@ -1,5 +1,7 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -12,15 +14,60 @@ namespace asp_web_online_judge
         protected void Page_Load(object sender, EventArgs e)
         {
             // 页面加载时的逻辑
+            if (!IsPostBack)
+            {
+                string problemId = Request.QueryString["id"];
+                if (!string.IsNullOrEmpty(problemId))
+                {
+                    GeneratePageContent(problemId);
+                }
+            }
         }
 
-        protected void SubmitButton_Click(object sender, EventArgs e)
+
+        private void GeneratePageContent(string id)
         {
-            string userCode = CodeBox.Text;
-            // 在这里处理用户提交的代码
-            // 例如：编译、运行、判断结果等
-            // 这里只是一个简单的示例，实际应用中需要更复杂的处理逻辑
-            Response.Write("代码已提交: " + userCode);
+            string sql = $@"SELECT title,description,difficulty,time_memory_limit,
+                    total_accepted,total_attempted,algorithm_tags 
+                   FROM problem 
+                   WHERE id={id}";
+            DataTable dt = Dbconnection.ExecuteQuery(sql);
+            var reader = dt.Rows[0];
+            // 动态生成HTML内容
+            Literal content = new Literal();
+            content.Text = content.Text = $@"
+<article class='problem-card'>
+    <header class='problem-header'>
+        <h1>{HttpUtility.HtmlEncode(reader["title"])}</h1>
+        <div class='meta-info'>
+            <span class='difficulty-badge' data-diff='{reader["difficulty"]}'>
+                {reader["difficulty"]}
+            </span>
+            <dl class='limit-box'>
+                <dt>限制</dt>
+                <dd>{(reader["time_memory_limit"])}</dd>
+            </dl>
+        </div>
+    </header>
+    
+    <section class='stats-container'>
+        <div class='progress-bar' 
+             data-accepted='{reader["total_accepted"]}'
+             data-attempted='{reader["total_attempted"]}'>
+        </div>
+    </section>
+
+    <section class='description-box markdown-content'>
+        {(reader["description"].ToString())}
+    </section>
+
+    <footer class='tag-container'>
+        {(reader["algorithm_tags"])}
+    </footer>
+</article>";
+
+
+            form1.Controls.Add(content);
         }
     }
 }

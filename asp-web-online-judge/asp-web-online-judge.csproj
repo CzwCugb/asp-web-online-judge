@@ -138,6 +138,7 @@
     <Content Include="database\onlinejudge.sql" />
     <Content Include="Global.asax" />
     <Content Include="user\categories.aspx" />
+    <Content Include="user\css\problem.css" />
     <Content Include="user\css\home.css" />
     <Content Include="user\css\login.css" />
     <Content Include="user\css\register.css" />

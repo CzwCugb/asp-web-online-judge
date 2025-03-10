@@ -1,0 +1,97 @@
+﻿/* 核心容器 */
+.problem-card {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* 难度徽章 */
+.difficulty-badge[data-diff="Easy"] {
+    background: #4CAF50;
+}
+
+.difficulty-badge[data-diff="Medium"] {
+    background: #FFC107;
+}
+
+.difficulty-badge[data-diff="Hard"] {
+    background: #F44336;
+}
+
+/* 描述区域 */
+.description-box {
+    line-height: 1.6;
+    padding: 1rem;
+    border: 1px solid #eee;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+/* 进度条动态效果 */
+.progress-bar {
+    height: 8px;
+    background: #eee;
+    &::after
+
+{
+    content: '';
+    display: block;
+    width: calc({accepted}/{attempted}*100%);
+    height: 100%;
+    background: #2196F3;
+    transition: width 0.3s;
+}
+
+}
+
+/* 标签云样式 */
+.tag-item {
+    display: inline-flex;
+    padding: 4px 12px;
+    background: #f5f5f5;
+    border-radius: 20px;
+    margin: 4px;
+}
+
+/* 隐藏具体数据 */
+.MJX_Assistive_MathML {
+    display: none !important;
+}
+
+/* 基本样式重置 */
+body, p {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* 背包问题描述的容器样式 */
+.problem-description {
+    width: 80%;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+    /* 标题样式 */
+    .problem-description h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    /* 文本段落样式 */
+    .problem-description p {
+        line-height: 1.6;
+        color: #666;
+    }
+
+/* 数学公式的样式（这里主要是为了确保公式显示正常，不做过多美化） */
+.MathJax {
+    display: inline-block;
+    margin: 0 5px;
+}
