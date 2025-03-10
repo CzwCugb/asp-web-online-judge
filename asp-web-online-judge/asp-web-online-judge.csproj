@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="admin\home.aspx" />
+    <Content Include="database\onlinejudge.sql" />
     <Content Include="Global.asax" />
     <Content Include="user\categories.aspx" />
     <Content Include="user\css\home.css" />
@@ -158,6 +159,8 @@
     <Compile Include="admin\home.aspx.designer.cs">
       <DependentUpon>home.aspx</DependentUpon>
     </Compile>
+    <Compile Include="database\Dbconnection.cs" />
+    <Compile Include="database\DbConfig.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
