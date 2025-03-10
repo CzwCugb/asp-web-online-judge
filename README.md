@@ -1,7 +1,7 @@
 # Online Judge Website based on ASP.NET Framework
 
 ## To do List
-- [ ] 主要处理数据库链接的代码
+- [X] 主要处理数据库链接的代码
 - [ ] 注册页面数据库链接
 - [ ] 注册页面验证
 - [ ] 登录数据库验证
