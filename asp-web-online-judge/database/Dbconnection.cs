@@ -15,4 +15,12 @@ public class Dbconnection
             return dt;
         }
     }
+    public static void Execute(string sql) {
+        using (MySqlConnection conn = new MySqlConnection(Dbconfig.Connection))
+        {
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(sql, conn);
+            cmd.ExecuteNonQuery();
+        }
+    }
 }

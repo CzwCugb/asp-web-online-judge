@@ -1,5 +1,7 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -45,10 +47,24 @@ namespace asp_web_online_judge
 
             // 这里可以添加其他验证（如密码复杂度、用户名唯一性检查等）
 
+            string sql = $"Select * from User where account = '{username}'";
+            DataTable dt = Dbconnection.ExecuteQuery(sql);
+            if (dt.Rows.Count != 0)
+            {
+                lblMessage.Text = "该用户名已被注册";
+                return;
+            }
+            sql = $"Insert into User(account,password) values ('{username}','{password}')";
+            Dbconnection.Execute(sql);
+            sql = $"Select * from User where account = '{username}'";
+            dt = Dbconnection.ExecuteQuery(sql);
+            string id = dt.Rows[0]["id"].ToString();
+
             // 假设注册成功，保存用户信息到Cookie并跳转到登录页面
             try
             {
                 HttpCookie userInfoCookie = new HttpCookie("UserInfo");
+                userInfoCookie["Userid"] = id;
                 userInfoCookie["Username"] = username;
                 userInfoCookie["Password"] = password;
                 userInfoCookie.Expires = DateTime.Now.AddDays(1);
