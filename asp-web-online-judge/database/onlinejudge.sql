@@ -20,6 +20,16 @@ CREATE TABLE IF NOT EXISTS User (
   password VARCHAR(255) NOT NULL
 );
 
+USE onlinejudge;
+insert Into User(
+	account,
+    password
+)values(
+	'admin',
+    'admin'
+);
+
+
 INSERT INTO problem (
     title, 
     description, 
