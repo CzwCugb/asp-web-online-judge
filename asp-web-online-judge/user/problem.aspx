@@ -7,6 +7,11 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>算法竞赛题目</title>
     <link href="./css/problem.css" rel="stylesheet" type="text/css"/>
+
+    <!-- MathJax 数学公式支持 -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
