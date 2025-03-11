@@ -58,7 +58,7 @@ namespace asp_web_online_judge
     </section>
 
     <section class='description-box markdown-content'>
-        {(reader["description"].ToString())}
+        {markdown_to_html.to_html(reader["description"].ToString())}
     </section>
 
     <footer class='tag-container'>
