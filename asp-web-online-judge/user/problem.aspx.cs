@@ -65,8 +65,6 @@ namespace asp_web_online_judge
         {(reader["algorithm_tags"])}
     </footer>
 </article>";
-
-
             form1.Controls.Add(content);
         }
     }
