@@ -5,8 +5,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <link href="./css/home.css" rel="stylesheet" type="text/css"/>
+
     <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/home2.css" rel="stylesheet" type="text/css"/>
     <style>
         .problem-card { 
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -20,16 +21,19 @@
 </head>
 <body>
     <form id="form1" runat="server">
-        <div class="container">
-            <div class="header">
+
+        <nav class = "navbar-fixed-top container-center" style = "z-index : 10;">
+            <div class="header child-center text-center title-head">
                 <h1>Welcome to Code Arena Online Judge！</h1>
             </div>
-            <div class="nav">
-                <a href="login.aspx">登录</a>
-                <a href="register.aspx">注册</a>
+            <div class="nav child-center text-center son-a-center head-list">
+                <div id = "login_register" runat="server"> </div>
                 <a href="categories.aspx">题单</a>
                 <a href="rankings.aspx">排行榜</a>
             </div>
+        </nav>
+
+        <div class="container main-page-home">
 
             <div class="container py-4">
                 <div class="problem-card bg-white p-4 mb-4">

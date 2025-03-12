@@ -59,11 +59,19 @@
     left: 0;
     border-width: 0 0 1px;
     width: 100%;
-    background-color: #222;
+    background-color:ghostwhite;
+}
+
+.head-list .navbar-fixed-top{
+    color: darkgray;
+}
+
+.title-head {
+    border-bottom-color: lightgrey;
 }
 
 .container-center {
-    text-align : center;
+    text-align: center;
 }
 
 .child-center {
