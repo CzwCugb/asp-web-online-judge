@@ -30,7 +30,7 @@ namespace asp_web_online_judge
             Literal content = new Literal();
             if (Request.Cookies["UserInfo"] != null)
             {
-                content.Text = $"<a href=\"profile?id={Request.Cookies["UserInfo"]["Userid"]}.aspx\">{Request.Cookies["UserInfo"]["Username"]}</a>";
+                content.Text = $"<a href=\"profile.aspx\">{Request.Cookies["UserInfo"]["Username"]}</a>";
             }
             else
             {

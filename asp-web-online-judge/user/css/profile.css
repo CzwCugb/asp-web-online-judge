@@ -1,0 +1,82 @@
+﻿/* 基础样式重置 */
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: 'Segoe UI', '微软雅黑', sans-serif;
+    background: #f0f2f5;
+}
+
+/* 主容器样式 */
+.main-page {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+    .main-page:hover {
+        transform: translateY(-2px);
+    }
+
+/* 标题样式 */
+h2 {
+    color: #1a73e8;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+/* 信息项样式 */
+.main-page p {
+    margin: 1.5rem 0;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: baseline;
+}
+
+    .main-page p::before {
+        content: "•";
+        color: #1a73e8;
+        margin-right: 0.8rem;
+        font-weight: bold;
+    }
+
+    /* 标签样式 */
+    .main-page p strong {
+        color: #666;
+        min-width: 100px;
+        display: inline-block;
+        margin-right: 1.5rem;
+    }
+
+/* 值样式 */
+.main-page asp-label {
+    color: #333;
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .main-page {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    .main-page p {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+        .main-page p strong {
+            margin-bottom: 0.5rem;
+        }
+}

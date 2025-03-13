@@ -8,6 +8,7 @@
 
     <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="./css/home2.css" rel="stylesheet" type="text/css"/>
+    <link href="./css/navbar-fixed-top.css" rel="stylesheet" type="text/css"/>
     <style>
         .problem-card { 
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -22,7 +23,7 @@
 <body>
     <form id="form1" runat="server">
 
-        <nav class = "navbar-fixed-top container-center" style = "z-index : 10;">
+        <nav class = "navbar-fixed-top container-center nav" style = "z-index : 10;">
             <div class="header child-center text-center title-head">
                 <h1>Welcome to Code Arena Online Judge！</h1>
             </div>

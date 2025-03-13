@@ -18,11 +18,13 @@ CREATE TABLE IF NOT EXISTS problem (
   FULLTEXT INDEX idx_description (description)  -- 全文检索支持‌:ml-citation{ref="2" data="citationList"}
 );
 
-CREATE TABLE IF NOT EXISTS User (
-  id INT AUTO_INCREMENT PRIMARY KEY,  -- 自增主键‌:ml-citation{ref="2,3" data="citationList"}
-  account VARCHAR(255) NOT NULL,
-  password VARCHAR(255) NOT NULL
-);
+CREATE TABLE if NOT EXISTS User (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    account VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(100) NULL,
+    registrationdate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 USE onlinejudge;
 insert Into User(
