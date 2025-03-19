@@ -11,7 +11,8 @@
     left: 0;
     border-width: 0 0 1px;
     width: 100%;
-    background-color:ghostwhite;
+    background-color: ghostwhite;
+    box-shadow: 0 2px 4px 0 var(--cb-color-shadow,rgba(0,0,0,0.16));
 }
 
 .head-list .navbar-fixed-top{

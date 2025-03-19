@@ -172,6 +172,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="service\JudgeService.cs" />
     <Compile Include="static\markdown_to_html.cs" />
     <Compile Include="user\categories.aspx.cs">
       <DependentUpon>categories.aspx</DependentUpon>

@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using asp_web_online_judge.service;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -106,7 +107,7 @@ namespace asp_web_online_judge
                     "showToast('⚠️ 代码内容不能为空！', 'warning');", true);
                 return;
             }
-            /*
+            
             try
             {
                 // 提交到判题队列
@@ -119,7 +120,7 @@ namespace asp_web_online_judge
                 ClientScript.RegisterStartupScript(this.GetType(), "SubmitError",
                     $"showToast('❌ 提交失败：{ex.Message}', 'error');", true);
             }
-            */
+            
         }
     }
 }

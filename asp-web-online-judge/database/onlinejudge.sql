@@ -351,3 +351,17 @@ $\\dfrac{|a-b|}{\\max(1,b)} \\leq 10^{-4}$ 的时候，你能得到本测试点�
     0,
     N'贪心,二分'
 );
+
+
+CREATE TABLE submissions (
+    submission_id VARCHAR(36) PRIMARY KEY COMMENT 'UUID格式的提交ID',
+    user_id INT NOT NULL COMMENT '关联用户表的用户ID',
+    problem_id INT NOT NULL COMMENT '关联题目表的题目ID',
+    submission_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '提交时间',
+    status ENUM('IC', 'AC', 'WA', 'RE', 'TLE', 'MLE', 'CE','in queue') 
+        NOT NULL DEFAULT 'IC' COMMENT '判题状态：IC=错误 in queue=在队列中',
+    test_cases JSON NOT NULL COMMENT '存储各测试点状态的JSON数组',
+    code TEXT NOT NULL COMMENT '提交的源代码',
+    language ENUM('C++', 'Python') 
+        NOT NULL COMMENT '编程语言类型',
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='代码提交记录表';
