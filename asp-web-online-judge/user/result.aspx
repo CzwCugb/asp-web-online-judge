@@ -10,7 +10,7 @@
 <body>
     <form id="form1" runat="server">
         <div>
-            运行代码后，显示评测结果页面
+            评测结果页面
         </div>
     </form>
 </body>

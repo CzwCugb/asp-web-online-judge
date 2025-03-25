@@ -138,14 +138,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="admin\home.aspx" />
-    <Content Include="database\onlinejudge.sql" />
+    <Content Include="resource\onlinejudge.sql" />
     <Content Include="Global.asax" />
     <Content Include="user\categories.aspx" />
-    <Content Include="user\css\home2.css" />
-    <Content Include="user\css\navbar-fixed-top.css" />
-    <Content Include="user\css\problem2.css" />
-    <Content Include="user\css\problem.css" />
     <Content Include="user\css\home.css" />
+    <Content Include="user\css\navbar-fixed-top.css" />
+    <Content Include="user\css\problem.css" />
     <Content Include="user\css\login.css" />
     <Content Include="user\css\profile.css" />
     <Content Include="user\css\register.css" />
@@ -167,13 +165,9 @@
     <Compile Include="admin\home.aspx.designer.cs">
       <DependentUpon>home.aspx</DependentUpon>
     </Compile>
-    <Compile Include="database\Dbconnection.cs" />
-    <Compile Include="database\DbConfig.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="service\JudgeService.cs" />
-    <Compile Include="static\markdown_to_html.cs" />
     <Compile Include="user\categories.aspx.cs">
       <DependentUpon>categories.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -246,6 +240,16 @@
     <Folder Include="admin\javascript\" />
     <Folder Include="admin\static\" />
     <Folder Include="user\static\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\online-judge.BLL\online-judge.BLL.csproj">
+      <Project>{89377d76-8a52-445e-a159-7ece1b63b505}</Project>
+      <Name>online-judge.BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\online-judge.DAL\online-judge.DAL.csproj">
+      <Project>{26546084-3b64-478b-b995-06186be7ab86}</Project>
+      <Name>online-judge.DAL</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

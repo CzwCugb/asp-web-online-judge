@@ -1,0 +1,17 @@
+C:\Users\chenz\Desktop\asp-web-online-judge\online-judge.BLL\obj\Debug\online-judge.BLL.csproj.AssemblyReference.cache
+C:\Users\chenz\Desktop\asp-web-online-judge\online-judge.BLL\obj\Debug\online-judge.BLL.csproj.CoreCompileInputs.cache
+C:\Users\chenz\Desktop\asp-web-online-judge\online-judge.BLL\bin\Debug\online-judge.BLL.dll
+C:\Users\chenz\Desktop\asp-web-online-judge\online-judge.BLL\bin\Debug\online-judge.BLL.pdb
+C:\Users\chenz\Desktop\asp-web-online-judge\online-judge.BLL\bin\Debug\Markdig.dll
+C:\Users\chenz\Desktop\asp-web-online-judge\online-judge.BLL\bin\Debug\System.Buffers.dll
+C:\Users\chenz\Desktop\asp-web-online-judge\online-judge.BLL\bin\Debug\System.Memory.dll
+C:\Users\chenz\Desktop\asp-web-online-judge\online-judge.BLL\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\chenz\Desktop\asp-web-online-judge\online-judge.BLL\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\chenz\Desktop\asp-web-online-judge\online-judge.BLL\bin\Debug\Markdig.xml
+C:\Users\chenz\Desktop\asp-web-online-judge\online-judge.BLL\bin\Debug\System.Buffers.xml
+C:\Users\chenz\Desktop\asp-web-online-judge\online-judge.BLL\bin\Debug\System.Memory.xml
+C:\Users\chenz\Desktop\asp-web-online-judge\online-judge.BLL\bin\Debug\System.Numerics.Vectors.xml
+C:\Users\chenz\Desktop\asp-web-online-judge\online-judge.BLL\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\chenz\Desktop\asp-web-online-judge\online-judge.BLL\obj\Debug\online-j.3C8D4428.Up2Date
+C:\Users\chenz\Desktop\asp-web-online-judge\online-judge.BLL\obj\Debug\online-judge.BLL.dll
+C:\Users\chenz\Desktop\asp-web-online-judge\online-judge.BLL\obj\Debug\online-judge.BLL.pdb

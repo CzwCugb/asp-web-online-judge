@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security.Principal;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -15,15 +16,13 @@ namespace asp_web_online_judge
         protected void Page_Load(object sender, EventArgs e)
         {
             // 页面加载时的逻辑
-            if (!IsPostBack)
+            string problemId = Request.QueryString["id"];
+            if (!string.IsNullOrEmpty(problemId))
             {
-                string problemId = Request.QueryString["id"];
-                if (!string.IsNullOrEmpty(problemId))
-                {
-                    GeneratePageContent(problemId);
-                }
+                GeneratePageContent(problemId);
             }
         }
+        
         public string GetDifficultyClass(string difficulty)
         {
             if (difficulty == "Easy") return "bg-success";
@@ -92,7 +91,7 @@ namespace asp_web_online_judge
         </div>
     </div>
 </div>";
-            form1.Controls.AddAt(0,content);
+            form1.Controls.AddAt(0, content);
         }
 
         protected void SubmitButton_Click(object sender, EventArgs e)
@@ -104,23 +103,21 @@ namespace asp_web_online_judge
             if (string.IsNullOrWhiteSpace(code))
             {
                 ClientScript.RegisterStartupScript(this.GetType(), "EmptyCode",
-                    "showToast('⚠️ 代码内容不能为空！', 'warning');", true);
+                   "window.alert('代码不能为空！');", true);
                 return;
             }
-            
             try
             {
                 // 提交到判题队列
-                JudgeService.SubmitCode(code, language);
-                ClientScript.RegisterStartupScript(this.GetType(), "SubmitSuccess",
-                    "showToast('🚀 代码提交成功！', 'success');", true);
+                string result = JudgeService.Execute(code, language);
+                debug_label.Text = result;
+                //Response.Redirect("result.aspx");
             }
             catch (Exception ex)
             {
-                ClientScript.RegisterStartupScript(this.GetType(), "SubmitError",
-                    $"showToast('❌ 提交失败：{ex.Message}', 'error');", true);
+                ClientScript.RegisterStartupScript(this.GetType(), "EmptyCode",
+                   "window.alert('提交失败！');", true);
             }
-            
         }
     }
 }

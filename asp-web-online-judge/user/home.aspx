@@ -6,18 +6,9 @@
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="./css/home2.css" rel="stylesheet" type="text/css"/>
+    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="./css/home.css" rel="stylesheet" type="text/css"/>
     <link href="./css/navbar-fixed-top.css" rel="stylesheet" type="text/css"/>
-    <style>
-        .problem-card { 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        .table-hover tbody tr { transition: all 0.2s ease; }
-        .difficulty-badge { padding: 0.25em 0.6em; font-size: 0.85em; }
-    </style>
     <title>Code Arena</title>
 </head>
 <body>
