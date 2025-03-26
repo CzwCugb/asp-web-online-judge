@@ -57,12 +57,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="JudgeResult.cs" />
     <Compile Include="JudgeService.cs" />
     <Compile Include="markdown_to_html.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\online-judge.DAL\online-judge.DAL.csproj">
+      <Project>{26546084-3b64-478b-b995-06186be7ab86}</Project>
+      <Name>online-judge.DAL</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

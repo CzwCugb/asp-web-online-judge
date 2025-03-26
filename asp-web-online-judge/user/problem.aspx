@@ -1,4 +1,4 @@
-﻿﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="problem.aspx.cs" Inherits="asp_web_online_judge.problem" %>
+﻿﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="problem.aspx.cs" Inherits="asp_web_online_judge.problem" ValidateRequest="false" %>
 
 <!DOCTYPE html>
 <html>
@@ -27,11 +27,11 @@
 <body>
     <form id="form1" runat="server">
         <div class="code-section">
-            <h3>✍️ 代码提交</h3>
+            <h3>代码提交</h3>
             
             <!-- 语言选择器 -->
-            <select id="languageSelector" class="language-selector">
-                <option value="text/x-csrc">C/C++</option>
+            <select id="languageSelector" class="language-selector" runat="server">
+                <option value="c/c++">C/C++</option>
                 <option value="python">Python</option>
             </select>
 
@@ -52,7 +52,7 @@
             <asp:Button 
                 ID="SubmitButton" 
                 runat="server" 
-                Text="🚀 提交代码" 
+                Text="提交代码" 
                 CssClass="submit-button" 
                 OnClick="SubmitButton_Click"
                 OnClientClick="syncCode()" />

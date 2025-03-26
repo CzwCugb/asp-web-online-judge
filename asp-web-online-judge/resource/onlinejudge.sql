@@ -364,3 +364,65 @@ CREATE TABLE submissions (
     code_ TEXT NOT NULL COMMENT '提交的源代码',
     language_ ENUM('C++', 'Python') NOT NULL COMMENT '编程语言类型'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='代码提交记录表';
+
+
+
+DROP TABLE IF EXISTS test_case;
+CREATE TABLE test_case (
+    test_case_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '自增测试用例ID',
+    problem_id INT NOT NULL COMMENT '关联的题目ID',
+    input_data TEXT NOT NULL COMMENT '测试用例输入数据',
+    output_data TEXT NOT NULL COMMENT '测试用例期望输出数据',
+    FOREIGN KEY (problem_id) REFERENCES problem(id) ON DELETE CASCADE 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 为问题1（Hello,World!）插入测试用例 
+INSERT INTO test_case (problem_id, input_data, output_data)
+VALUES (1, '', 'Hello,World!');
+ 
+-- 为问题2（输出字符菱形）插入测试用例 
+INSERT INTO test_case (problem_id, input_data, output_data)
+VALUES (2, '', 
+'*
+ *** 
+*****
+ *** 
+  *');
+ 
+-- 为问题3（超级玛丽游戏）插入测试用例 
+INSERT INTO test_case (problem_id, input_data, output_data)
+VALUES (3, '', 
+'                ******** 
+               ************ 
+               ####....#.
+             #..###.....##....
+             ###.......######              ###            ### 
+                ...........               #...#          #...#
+               ##*#######                 #.#.#          #.#.# 
+            ####*******######             #.#.#          #.#.# 
+           ...#***.****.*###....          #...#          #...#
+           ....**********##.....           ###            ### 
+           ....****    *****....
+             ####        #### 
+           ######        ###### 
+############################################################## 
+#...#......#.##...#......#.##...#......#.##------------------#
+###########################################------------------#
+#..#....#....##..#....#....##..#....#....##################### 
+##########################################    #----------#
+#.....#......##.....#......##.....#......#    #----------#
+##########################################    #----------#
+#.#..#....#..##.#..#....#..##.#..#....#..#    #----------#
+##########################################    ############');
+ 
+-- 为问题4（A+B Problem）插入测试用例 
+INSERT INTO test_case (problem_id, input_data, output_data)
+VALUES (4, '20 30', '50');
+ 
+-- 为问题5（小鸟的设备）插入测试用例 
+INSERT INTO test_case (problem_id, input_data, output_data)
+VALUES (5, 
+'2 1 
+2 2 
+2 1000', 
+'2.0000000000');

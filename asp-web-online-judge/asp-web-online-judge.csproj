@@ -238,8 +238,6 @@
   <ItemGroup>
     <Folder Include="admin\css\" />
     <Folder Include="admin\javascript\" />
-    <Folder Include="admin\static\" />
-    <Folder Include="user\static\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\online-judge.BLL\online-judge.BLL.csproj">

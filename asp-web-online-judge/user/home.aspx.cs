@@ -2,6 +2,7 @@
 using System.Data;
 using System.Web.UI.WebControls;
 using MySql.Data.MySqlClient;
+using online_judge.DAL;
 
 namespace asp_web_online_judge
 {

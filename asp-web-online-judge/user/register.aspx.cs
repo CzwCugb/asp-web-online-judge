@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using online_judge.DAL;
 
 namespace asp_web_online_judge
 {

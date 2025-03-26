@@ -1,5 +1,4 @@
-﻿using asp_web_online_judge.service;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,6 +7,8 @@ using System.Security.Principal;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using online_judge.BLL;
+using online_judge.DAL;
 
 namespace asp_web_online_judge
 {
@@ -108,16 +109,18 @@ namespace asp_web_online_judge
             }
             try
             {
-                // 提交到判题队列
-                string result = JudgeService.Execute(code, language);
-                debug_label.Text = result;
-                //Response.Redirect("result.aspx");
+                int id =int.Parse(Request["id"]);
+                //debug_label.Text = language;
+                Session["result"] = JudgeService.Execute(id, code, language);
+                Response.Redirect("result.aspx" + "?id=" + Request["id"]);
             }
             catch (Exception ex)
             {
                 ClientScript.RegisterStartupScript(this.GetType(), "EmptyCode",
-                   "window.alert('提交失败！');", true);
+                   "window.alert('提交失败！'); ", true);
             }
         }
+
+
     }
 }
