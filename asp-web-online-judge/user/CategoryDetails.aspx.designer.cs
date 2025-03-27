@@ -11,7 +11,7 @@ namespace asp_web_online_judge
 {
 
 
-    public partial class categories
+    public partial class CategoryDetails
     {
 
         /// <summary>
@@ -24,48 +24,30 @@ namespace asp_web_online_judge
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// txtSearch 控件。
+        /// h1Title 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtSearch;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl h1Title;
 
         /// <summary>
-        /// btnSearch 控件。
+        /// GridView1 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSearch;
+        protected global::System.Web.UI.WebControls.GridView GridView1;
 
         /// <summary>
-        /// rptCategories 控件。
+        /// pnlNoProblems 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptCategories;
-
-        /// <summary>
-        /// pnlNoData 控件。
-        /// </summary>
-        /// <remarks>
-        /// 自动生成的字段。
-        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlNoData;
-
-        /// <summary>
-        /// rptPagination 控件。
-        /// </summary>
-        /// <remarks>
-        /// 自动生成的字段。
-        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptPagination;
+        protected global::System.Web.UI.WebControls.Panel pnlNoProblems;
     }
 }

@@ -448,3 +448,42 @@ VALUES (5,
 '2.0000000000');
 INSERT INTO test_case_mapping(problem_id,in_problem_case_id,test_case_id)
 VALUES (5,1,6);
+
+-- 题单表
+CREATE TABLE IF NOT EXISTS categories (
+    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 题单-题目关联表
+CREATE TABLE IF NOT EXISTS category_problems (
+    category_id INT NOT NULL,
+    problem_id INT NOT NULL,
+    PRIMARY KEY (category_id, problem_id),
+    FOREIGN KEY (category_id) REFERENCES categories(category_id),
+    FOREIGN KEY (problem_id) REFERENCES problem(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- 插入基础题单
+INSERT INTO categories (category_name) VALUES
+(N'入门题库'),
+(N'算法基础'),
+(N'周赛精选');
+
+-- 插入带自动生成ID的题单
+INSERT INTO categories (category_name) VALUES (N'新手必做');
+SET @new_category_id = LAST_INSERT_ID();  -- 获取新插入题单的ID
+
+-- 假设已存在题目ID（根据你的problem表插入语句）
+SET @hello_world_id = 1;  -- Hello,World! 的ID
+SET @diamond_id = 2;      -- 输出字符菱形的ID
+
+-- 关联题目到题单
+INSERT INTO category_problems (category_id, problem_id) VALUES
+(1, @hello_world_id),    -- 入门题库关联HelloWorld
+(1, @diamond_id),        -- 入门题库关联菱形题
+(@new_category_id, 1),   -- 新手必做关联HelloWorld
+(@new_category_id, 2);   -- 新手必做关联菱形题
+

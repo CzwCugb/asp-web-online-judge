@@ -141,6 +141,7 @@
     <Content Include="resource\onlinejudge.sql" />
     <Content Include="Global.asax" />
     <Content Include="user\categories.aspx" />
+    <Content Include="user\CategoryDetails.aspx" />
     <Content Include="user\css\home.css" />
     <Content Include="user\css\navbar-fixed-top.css" />
     <Content Include="user\css\problem.css" />
@@ -174,6 +175,13 @@
     </Compile>
     <Compile Include="user\categories.aspx.designer.cs">
       <DependentUpon>categories.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="user\CategoryDetails.aspx.cs">
+      <DependentUpon>CategoryDetails.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="user\CategoryDetails.aspx.designer.cs">
+      <DependentUpon>CategoryDetails.aspx</DependentUpon>
     </Compile>
     <Compile Include="user\home.aspx.cs">
       <DependentUpon>home.aspx</DependentUpon>
