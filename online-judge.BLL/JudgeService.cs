@@ -12,8 +12,9 @@ namespace online_judge.BLL
 {
     public class JudgeService
     {
-        public static JudgeResult Execute(int problemId, string code, string language)
+        public static JudgeResult Execute(int problemId, string code, string language,int testid = -1)
         {
+
             var result = new JudgeResult();
             var tempFile = Path.GetTempFileName();
             if (language == "c/c++"){
@@ -23,14 +24,23 @@ namespace online_judge.BLL
             {
                 tempFile = Path.ChangeExtension(Path.GetTempFileName(), ".py");
             }
-            const int timeoutMilliseconds = 1000;
+            const int timeoutMilliseconds = 2000;
             var stopwatch = new Stopwatch();
 
             try
             {
+                DataTable testCase;
                 // 数据库查询逻辑 
-                DataTable testCase = Dbconnection.ExecuteQuery(
-                    $"SELECT input_data, output_data FROM test_case WHERE problem_id = {problemId} LIMIT 1");
+                if (testid == -1)
+                {
+                    testCase = Dbconnection.ExecuteQuery(
+                        $"SELECT input_data, output_data FROM test_case WHERE problem_id = {problemId} LIMIT 1");
+                }
+                else
+                {
+                    testCase = Dbconnection.ExecuteQuery(
+                        $"SELECT input_data, output_data FROM test_case WHERE test_case_id = {testid} LIMIT 1");
+                }
 
                 if (testCase.Rows.Count == 0)
                 {
@@ -146,5 +156,23 @@ namespace online_judge.BLL
                 return $"-u \"{file}\"";
             }
         }
+
+        public static List<JudgeResult> Executemulti(int problemId, string code, string language)
+        {
+            DataTable testCase = Dbconnection.ExecuteQuery(
+                    $"SELECT in_problem_case_id,test_case_id FROM test_case_mapping WHERE problem_id = {problemId}");
+            List<JudgeResult> result = new List<JudgeResult>();
+            int len = testCase.Rows.Count;
+            for ( int i = 0; i < len; i++ )
+            {
+                for ( int j = 0; j < len; j++ ) { 
+                    if((i + 1).ToString() == (testCase.Rows[j]["in_problem_case_id"].ToString())) {
+                        result.Add(Execute(problemId,code,language, (int)testCase.Rows[j]["test_case_id"]));
+                    }
+                }
+            }
+            return result;
+        }
+
     }
 }

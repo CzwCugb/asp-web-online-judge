@@ -87,10 +87,79 @@
             color: #dc3545;
             font-weight: bold;
         }
+
+        .test-case-item {
+            border: 1px solid #eee;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .io-section pre {
+            background: #f6f8fa;
+            padding: 10px;
+            border-radius: 3px;
+        }
+
+        .status-box {
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .accepted { background: #d4edda; color: #155724; }
+        .wrong-answer { background: #f8d7da; color: #721c24; }
+        .runtime-error { background: #fff3cd; color: #856404; }
+        .time-limit { background: #cce5ff; color: #004085; }
+
     </style>
 </head>
 <body>
+
+
+
     <form id="form1" runat="server">
+
+        <asp:Repeater ID="rptTestCases" runat="server" OnItemDataBound="rptTestCases_ItemDataBound">
+            <ItemTemplate>
+                <div class="test-case-item">
+                    <%-- 单个用例状态 --%>
+                    <div class="case-status">
+                        <span id="statusCaseBox" runat="server" class="status-box">
+                            <asp:Literal ID="litCaseStatus" runat="server" />
+                        </span>
+                    </div>
+
+                    <%-- 运行时信息 --%>
+                    <asp:Panel ID="pnlRuntime" runat="server" CssClass="runtime-info" Visible="false">
+                        用时: <asp:Literal ID="litTime" runat="server" /> ms
+                        内存: <asp:Literal ID="litMemory" runat="server" /> KB
+                    </asp:Panel>
+
+                    <%-- 错误信息 --%>
+                    <asp:Panel ID="pnlError" runat="server" CssClass="error-info" Visible="false">
+                        <pre><asp:Literal ID="litError" runat="server" /></pre>
+                    </asp:Panel>
+
+                    <%-- 测试用例对比 --%>
+                    <asp:Panel ID="pnlTestCase" runat="server" CssClass="test-case-info" Visible="false">
+                        <div class="io-section">
+                            <h5>输入</h5>
+                            <pre><asp:Literal ID="litInput" runat="server" /></pre>
+                        </div>
+                        <div class="io-section">
+                            <h5>期望输出</h5>
+                            <pre><asp:Literal ID="litExpected" runat="server" /></pre>
+                        </div>
+                        <div class="io-section">
+                            <h5>实际输出</h5>
+                            <pre><asp:Literal ID="litActual" runat="server" /></pre>
+                        </div>
+                    </asp:Panel>
+                </div>
+            </ItemTemplate>
+        </asp:Repeater>
+
         <div class="status-box" id="statusBox" runat="server">
             <asp:Literal ID="litStatus" runat="server"></asp:Literal>
         </div>

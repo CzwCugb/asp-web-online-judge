@@ -112,6 +112,7 @@ namespace asp_web_online_judge
                 int id =int.Parse(Request["id"]);
                 //debug_label.Text = language;
                 Session["result"] = JudgeService.Execute(id, code, language);
+                Session["results"] = JudgeService.Executemulti(id, code, language);
                 Response.Redirect("result.aspx" + "?id=" + Request["id"]);
             }
             catch (Exception ex)
