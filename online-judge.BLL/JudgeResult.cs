@@ -9,6 +9,9 @@ namespace online_judge.BLL
     [Serializable]
     public class JudgeResult
     {
+        // 新增测试用例ID字段
+        public int TestCaseId { get; set; }
+
         // 判题状态
         public string Status { get; set; }
 

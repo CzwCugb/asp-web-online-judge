@@ -142,6 +142,8 @@
     <Content Include="Global.asax" />
     <Content Include="user\categories.aspx" />
     <Content Include="user\CategoryDetails.aspx" />
+    <Content Include="user\competitions.aspx" />
+    <Content Include="user\competition_details.aspx" />
     <Content Include="user\css\home.css" />
     <Content Include="user\css\navbar-fixed-top.css" />
     <Content Include="user\css\problem.css" />
@@ -156,6 +158,7 @@
     <Content Include="user\rankings.aspx" />
     <Content Include="user\register.aspx" />
     <Content Include="user\result.aspx" />
+    <Content Include="user\submissions.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -182,6 +185,20 @@
     </Compile>
     <Compile Include="user\CategoryDetails.aspx.designer.cs">
       <DependentUpon>CategoryDetails.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="user\competitions.aspx.cs">
+      <DependentUpon>competitions.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="user\competitions.aspx.designer.cs">
+      <DependentUpon>competitions.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="user\competition_details.aspx.cs">
+      <DependentUpon>competition_details.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="user\competition_details.aspx.designer.cs">
+      <DependentUpon>competition_details.aspx</DependentUpon>
     </Compile>
     <Compile Include="user\home.aspx.cs">
       <DependentUpon>home.aspx</DependentUpon>
@@ -232,6 +249,13 @@
     </Compile>
     <Compile Include="user\result.aspx.designer.cs">
       <DependentUpon>result.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="user\submissions.aspx.cs">
+      <DependentUpon>submissions.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="user\submissions.aspx.designer.cs">
+      <DependentUpon>submissions.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

@@ -21,7 +21,8 @@
             <div class="nav child-center text-center son-a-center head-list">
                 <div id = "login_register" runat="server"> </div>
                 <a href="categories.aspx">题单</a>
-                <a href="rankings.aspx">排行榜</a>
+                <a href="competitions.aspx">比赛</a>
+                <a href="submissions.aspx">提交记录</a>
             </div>
         </nav>
 

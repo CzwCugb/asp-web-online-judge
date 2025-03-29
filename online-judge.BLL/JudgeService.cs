@@ -12,7 +12,7 @@ namespace online_judge.BLL
 {
     public class JudgeService
     {
-        public static JudgeResult Execute(int problemId, string code, string language,int testid = -1)
+        public static JudgeResult Execute(int problemId, string code, string language,int testid = -1,int caseid = 1)
         {
 
             var result = new JudgeResult();
@@ -68,6 +68,7 @@ namespace online_judge.BLL
                     }
                 };
 
+                result.TestCaseId = caseid;
                 result.Input = input;
                 result.ExpectedOutput = expectedOutput;
 
@@ -167,7 +168,7 @@ namespace online_judge.BLL
             {
                 for ( int j = 0; j < len; j++ ) { 
                     if((i + 1).ToString() == (testCase.Rows[j]["in_problem_case_id"].ToString())) {
-                        result.Add(Execute(problemId,code,language, (int)testCase.Rows[j]["test_case_id"]));
+                        result.Add(Execute(problemId,code,language, (int)testCase.Rows[j]["test_case_id"], i));
                     }
                 }
             }
