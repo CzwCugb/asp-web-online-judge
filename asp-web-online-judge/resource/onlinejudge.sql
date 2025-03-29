@@ -352,7 +352,7 @@ $\\dfrac{|a-b|}{\\max(1,b)} \\leq 10^{-4}$ 的时候，你能得到本测试点�
     N'贪心,二分'
 );
 
-
+DROP TABLE IF EXISTS submissions;
 CREATE TABLE submissions (
     submission_id VARCHAR(36) PRIMARY KEY COMMENT 'UUID格式的提交ID',
     user_id INT NOT NULL COMMENT '关联用户表的用户ID',
@@ -360,9 +360,10 @@ CREATE TABLE submissions (
     submission_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '提交时间',
     status_ ENUM('IC', 'AC', 'WA', 'RE', 'TLE', 'MLE', 'CE', 'in_queue') 
         NOT NULL DEFAULT 'IC' COMMENT '判题状态：IC=错误 in_queue=在队列中',
-    test_cases JSON NOT NULL COMMENT '存储各测试点状态的JSON数组，格式为：[{"case_id": 1, "status": "AC"}, ...]',
+    test_cases TEXT NOT NULL COMMENT '存储各测试点状态的JSON数组，格式为：[{"case_id": 1, "status": "AC"}, ...]',
     code_ TEXT NOT NULL COMMENT '提交的源代码',
-    language_ ENUM('C++', 'Python') NOT NULL COMMENT '编程语言类型'
+    language_ ENUM('C++', 'Python') NOT NULL COMMENT '编程语言类型',
+    comp_id INT NOT NULL COMMENT '比赛ID'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='代码提交记录表';
 
 
@@ -376,9 +377,19 @@ CREATE TABLE test_case (
     FOREIGN KEY (problem_id) REFERENCES problem(id) ON DELETE CASCADE 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS test_case_mapping;
+CREATE TABLE test_case_mapping(
+    problem_id INT NOT NULL,
+    test_case_mapping INT AUTO_INCREMENT PRIMARY KEY,
+    in_problem_case_id INT NOT NULL,
+    test_case_id INT NOT NULL
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- 为问题1（Hello,World!）插入测试用例 
 INSERT INTO test_case (problem_id, input_data, output_data)
 VALUES (1, '', 'Hello,World!');
+INSERT INTO test_case_mapping(problem_id,in_problem_case_id,test_case_id)
+VALUES (1,1,1);
  
 -- 为问题2（输出字符菱形）插入测试用例 
 INSERT INTO test_case (problem_id, input_data, output_data)
@@ -388,6 +399,8 @@ VALUES (2, '',
 *****
  *** 
   *');
+INSERT INTO test_case_mapping(problem_id,in_problem_case_id,test_case_id)
+VALUES (2,1,2);
  
 -- 为问题3（超级玛丽游戏）插入测试用例 
 INSERT INTO test_case (problem_id, input_data, output_data)
@@ -414,11 +427,19 @@ VALUES (3, '',
 ##########################################    #----------#
 #.#..#....#..##.#..#....#..##.#..#....#..#    #----------#
 ##########################################    ############');
+INSERT INTO test_case_mapping(problem_id,in_problem_case_id,test_case_id)
+VALUES (3,1,3);
  
 -- 为问题4（A+B Problem）插入测试用例 
 INSERT INTO test_case (problem_id, input_data, output_data)
 VALUES (4, '20 30', '50');
- 
+INSERT INTO test_case (problem_id, input_data, output_data)
+VALUES (4, '30 40', '70');
+INSERT INTO test_case_mapping(problem_id,in_problem_case_id,test_case_id)
+VALUES (4,1,4);
+INSERT INTO test_case_mapping(problem_id,in_problem_case_id,test_case_id)
+VALUES (4,2,5);
+
 -- 为问题5（小鸟的设备）插入测试用例 
 INSERT INTO test_case (problem_id, input_data, output_data)
 VALUES (5, 
@@ -426,7 +447,14 @@ VALUES (5,
 2 2 
 2 1000', 
 '2.0000000000');
+INSERT INTO test_case_mapping(problem_id,in_problem_case_id,test_case_id)
+VALUES (5,1,6);
+ 
+-- 删除比赛-题目关联表
+DROP TABLE IF EXISTS category_problems;
 
+-- 删除比赛表
+DROP TABLE IF EXISTS categories;
 -- 题单表
 CREATE TABLE IF NOT EXISTS categories (
     category_id INT AUTO_INCREMENT PRIMARY KEY,

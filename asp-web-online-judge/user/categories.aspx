@@ -7,8 +7,28 @@
     <title>题单列表</title>
     <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet"/>
     <style>
-        .category-card { transition: transform 0.2s; }
-        .category-card:hover { transform: translateY(-3px); }
+        .category-card { 
+            transition: transform 0.2s; 
+            margin-bottom: 15px; 
+        }
+
+        .category-card:hover { 
+            transform: translateY(-3px); 
+        }
+
+        /* 网格布局 */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 每行2个格子 */
+            gap: 15px;
+        }
+
+        /* 适应小屏幕时，调整为1个格子 */
+        @media (max-width: 768px) {
+            .category-grid {
+                grid-template-columns: 1fr; /* 小屏幕上每行1个格子 */
+            }
+        }
     </style>
 </head>
 <body>
@@ -27,23 +47,25 @@
             </div>
 
             <!-- 题单列表 -->
-            <asp:Repeater ID="rptCategories" runat="server">
-                <ItemTemplate>
-                    <div class="card mb-3 category-card">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <a href='<%# "CategoryDetails.aspx?id=" + Eval("CategoryId") %>' class="text-decoration-none">
-                                    <%# Eval("CategoryName") %>
-                                </a>
-                            </h5>
-                            <div class="d-flex justify-content-between">
-                                <span class="text-muted">#<%# Eval("CategoryId") %></span>
-                                <span class="badge bg-primary">题目：<%# Eval("ProblemCount") %></span>
+            <div class="category-grid">
+                <asp:Repeater ID="rptCategories" runat="server">
+                    <ItemTemplate>
+                        <div class="card category-card">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <a href='<%# "CategoryDetails.aspx?id=" + Eval("CategoryId") %>' class="text-decoration-none">
+                                        <%# Eval("CategoryName") %>
+                                    </a>
+                                </h5>
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">#<%# Eval("CategoryId") %></span>
+                                    <span class="badge bg-primary">题目：<%# Eval("ProblemCount") %></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </ItemTemplate>
-            </asp:Repeater>
+                    </ItemTemplate>
+                </asp:Repeater>
+            </div>
 
             <!-- 无数据提示 -->
             <asp:Panel ID="pnlNoData" runat="server" Visible="false">

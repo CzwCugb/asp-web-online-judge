@@ -152,10 +152,10 @@
     <Content Include="user\css\register.css" />
     <Content Include="user\home.aspx" />
     <Content Include="user\javascript\jquery-3.7.1.min.js" />
+    <Content Include="user\leaderboard.aspx" />
     <Content Include="user\login.aspx" />
     <Content Include="user\problem.aspx" />
     <Content Include="user\profile.aspx" />
-    <Content Include="user\rankings.aspx" />
     <Content Include="user\register.aspx" />
     <Content Include="user\result.aspx" />
     <Content Include="user\submissions.aspx" />
@@ -207,6 +207,13 @@
     <Compile Include="user\home.aspx.designer.cs">
       <DependentUpon>home.aspx</DependentUpon>
     </Compile>
+    <Compile Include="user\leaderboard.aspx.cs">
+      <DependentUpon>leaderboard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="user\leaderboard.aspx.designer.cs">
+      <DependentUpon>leaderboard.aspx</DependentUpon>
+    </Compile>
     <Compile Include="user\login.aspx.cs">
       <DependentUpon>login.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -229,13 +236,6 @@
       <DependentUpon>profile.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="user\rankings.aspx.cs">
-      <DependentUpon>rankings.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="user\rankings.aspx.designer.cs">
-      <DependentUpon>rankings.aspx</DependentUpon>
-    </Compile>
     <Compile Include="user\register.aspx.cs">
       <DependentUpon>register.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

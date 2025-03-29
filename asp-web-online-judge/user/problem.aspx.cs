@@ -111,6 +111,7 @@ namespace asp_web_online_judge
             {
                 int userId = GetCurrentUserId();
                 int problemId = int.Parse(Request.QueryString["id"]);
+                int isComp = int.Parse(Request.QueryString["isCompetition"]);
                 string submissionId = Guid.NewGuid().ToString();
 
                 // 执行判题
@@ -145,9 +146,9 @@ namespace asp_web_online_judge
                 // 插入提交记录
                 string sql = @"INSERT INTO submissions 
                             (submission_id, user_id, problem_id, submission_time, 
-                             status_, test_cases, code_, language_)
+                             status_, test_cases, code_, language_,comp_id)
                             VALUES 
-                            (@subId, @userId, @probId, NOW(), @status, @cases, @code, @lang)";
+                            (@subId, @userId, @probId, NOW(), @status, @cases, @code, @lang, @isComp)";
 
                 MySqlParameter[] parameters = {
                     new MySqlParameter("@subId", MySqlDbType.VarChar) { Value = submissionId },
@@ -158,7 +159,8 @@ namespace asp_web_online_judge
                     new MySqlParameter("@code", MySqlDbType.Text) { Value = code },
                     new MySqlParameter("@lang", MySqlDbType.Enum) {
                         Value = language == "c/c++" ? "C++" : "Python"
-                    }
+                    },
+                    new MySqlParameter("@isComp", MySqlDbType.Int32) { Value = isComp }
                 };
 
                 int affectedRows = Dbconnection.ExecuteNonQuery(sql, parameters);

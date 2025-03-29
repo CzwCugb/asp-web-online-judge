@@ -106,5 +106,10 @@ namespace asp_web_online_judge
             if (diff == "medium") return "bg-warning";
             return "bg-danger";
         }
+
+        public string GetCompetitionIdFromUrl()
+        {
+            return Request.QueryString["id"];
+        }
     }
 }
