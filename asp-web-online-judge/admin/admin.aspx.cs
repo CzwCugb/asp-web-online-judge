@@ -4,6 +4,7 @@ using System.Configuration;
 using MySql.Data.MySqlClient;
 using System.Web.UI.WebControls;
 using System.Web;
+using System.Collections.Generic;
 
 namespace YourNamespace
 {
@@ -11,6 +12,11 @@ namespace YourNamespace
     {
         // 从Web.config中获取名为 DefaultConnection 的连接字符串
         private string connStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+
+        // 每页固定大小(可自行设置)
+        private const int PageSize = 10;
+
+        // 这几个字段保存当前正在编辑的ID，供编辑/保存时使用
         private int currentProblemId;
         private int currentUserId;
         private int currentCategoryId;
@@ -20,463 +26,450 @@ namespace YourNamespace
         {
             if (!IsPostBack)
             {
+                // 1) 先绑定数据
                 BindUsersGrid();
                 BindProblemsGrid();
                 BindCategoriesGrid();
                 BindCompetitionsGrid();
-                MultiView1.SetActiveView(viewUserOverview);
+
+                // 2) 根据 QueryString["view"] 的值，决定 MultiView1 当前显示哪一个视图
+                string viewParam = Request.QueryString["view"];
+                if (!string.IsNullOrEmpty(viewParam))
+                {
+                    switch (viewParam.ToLower())
+                    {
+                        case "users":
+                            MultiView1.SetActiveView(viewUserOverview);
+                            break;
+                        case "problems":
+                            MultiView1.SetActiveView(viewProblemOverview);
+                            break;
+                        case "categories":
+                            MultiView1.SetActiveView(viewCategoryOverview);
+                            break;
+                        case "competitions":
+                            MultiView1.SetActiveView(viewCompetitionOverview);
+                            break;
+                        default:
+                            // 如果view参数无效，则默认到用户管理
+                            MultiView1.SetActiveView(viewUserOverview);
+                            break;
+                    }
+                }
+                else
+                {
+                    // 如果URL里根本没有 ?view=xxx，则默认到“用户管理”
+                    MultiView1.SetActiveView(viewUserOverview);
+                }
             }
         }
 
-        // 辅助方法：截断超过指定长度的文本
-        protected string Truncate(string input, int maxLength)
-        {
-            if (string.IsNullOrEmpty(input))
-                return input;
-            return input.Length > maxLength ? input.Substring(0, maxLength) + "..." : input;
-        }
-
-        #region 数据绑定（用户、题目）
+        #region 用户列表分页与绑定
         private void BindUsersGrid()
         {
+            // 获取当前页码
+            int pageIndex = 1;
+            if (!string.IsNullOrEmpty(Request.QueryString["userPage"]))
+            {
+                int.TryParse(Request.QueryString["userPage"], out pageIndex);
+                if (pageIndex <= 0) pageIndex = 1;
+            }
+
+            // 获取搜索关键字（从文本框）
             string searchTerm = txtUserSearch.Text.Trim();
+
+            // 先查询总记录数
+            int totalRecords = 0;
             using (MySqlConnection conn = new MySqlConnection(connStr))
             {
-                string query = "SELECT id, account, email FROM User";
+                conn.Open();
+                string countSql = "SELECT COUNT(*) FROM User";
                 if (!string.IsNullOrEmpty(searchTerm))
-                    query += " WHERE account LIKE @search";
-                MySqlDataAdapter da = new MySqlDataAdapter(query, conn);
-                if (!string.IsNullOrEmpty(searchTerm))
-                    da.SelectCommand.Parameters.AddWithValue("@search", "%" + searchTerm + "%");
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-                gvUsers.DataSource = dt;
-                gvUsers.DataBind();
-            }
-        }
+                    countSql += " WHERE account LIKE @search";
 
+                MySqlCommand cmdCount = new MySqlCommand(countSql, conn);
+                if (!string.IsNullOrEmpty(searchTerm))
+                    cmdCount.Parameters.AddWithValue("@search", "%" + searchTerm + "%");
+
+                object obj = cmdCount.ExecuteScalar();
+                totalRecords = (obj == null) ? 0 : Convert.ToInt32(obj);
+                conn.Close();
+            }
+
+            int totalPages = (int)Math.Ceiling((double)totalRecords / PageSize);
+            if (totalPages < 1) totalPages = 1;
+            if (pageIndex > totalPages) pageIndex = totalPages;
+
+            // 计算 OFFSET
+            int offset = (pageIndex - 1) * PageSize;
+
+            // 查询本页数据
+            DataTable dt = new DataTable();
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                conn.Open();
+                string sql = "SELECT id, account, email FROM User";
+                if (!string.IsNullOrEmpty(searchTerm))
+                    sql += " WHERE account LIKE @search";
+                sql += " ORDER BY id LIMIT @offset, @pageSize";
+
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                if (!string.IsNullOrEmpty(searchTerm))
+                    cmd.Parameters.AddWithValue("@search", "%" + searchTerm + "%");
+                cmd.Parameters.AddWithValue("@offset", offset);
+                cmd.Parameters.AddWithValue("@pageSize", PageSize);
+
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                da.Fill(dt);
+                conn.Close();
+            }
+
+            // 绑定到 GridView
+            gvUsers.DataSource = dt;
+            gvUsers.DataBind();
+
+            // 生成分页链接 (带上view=users)
+            List<ListItem> pages = new List<ListItem>();
+            for (int i = 1; i <= totalPages; i++)
+            {
+                string url = "admin.aspx?view=users&userPage=" + i;
+                ListItem li = new ListItem("第" + i + "页", url);
+                if (i == pageIndex) li.Selected = true;
+                pages.Add(li);
+            }
+            // 绑定分页 Repeater
+            rptUserPagination.DataSource = pages;
+            rptUserPagination.DataBind();
+        }
+        #endregion
+
+        #region 题目列表分页与绑定
         private void BindProblemsGrid()
         {
+            int pageIndex = 1;
+            if (!string.IsNullOrEmpty(Request.QueryString["problemPage"]))
+            {
+                int.TryParse(Request.QueryString["problemPage"], out pageIndex);
+                if (pageIndex <= 0) pageIndex = 1;
+            }
+
             string searchTerm = txtProblemSearch.Text.Trim();
+
+            int totalRecords = 0;
             using (MySqlConnection conn = new MySqlConnection(connStr))
             {
-                string query = "SELECT id, title, description, difficulty FROM problem";
+                conn.Open();
+                string countSql = "SELECT COUNT(*) FROM problem";
                 if (!string.IsNullOrEmpty(searchTerm))
-                {
-                    int idValue;
-                    if (int.TryParse(searchTerm, out idValue))
-                        query += " WHERE id=@id OR title LIKE @search OR description LIKE @search";
-                    else
-                        query += " WHERE title LIKE @search OR description LIKE @search";
-                }
-                MySqlDataAdapter da = new MySqlDataAdapter(query, conn);
+                    countSql += " WHERE title LIKE @search OR description LIKE @search";
+
+                MySqlCommand cmdCount = new MySqlCommand(countSql, conn);
                 if (!string.IsNullOrEmpty(searchTerm))
-                {
-                    da.SelectCommand.Parameters.AddWithValue("@search", "%" + searchTerm + "%");
-                    int idValue;
-                    if (int.TryParse(searchTerm, out idValue))
-                        da.SelectCommand.Parameters.AddWithValue("@id", idValue);
-                }
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-                gvProblems.DataSource = dt;
-                gvProblems.DataBind();
+                    cmdCount.Parameters.AddWithValue("@search", "%" + searchTerm + "%");
+                object obj = cmdCount.ExecuteScalar();
+                totalRecords = (obj == null) ? 0 : Convert.ToInt32(obj);
+                conn.Close();
             }
+
+            int totalPages = (int)Math.Ceiling((double)totalRecords / PageSize);
+            if (totalPages < 1) totalPages = 1;
+            if (pageIndex > totalPages) pageIndex = totalPages;
+            int offset = (pageIndex - 1) * PageSize;
+
+            DataTable dt = new DataTable();
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                conn.Open();
+                string sql = "SELECT id, title, difficulty FROM problem";
+                if (!string.IsNullOrEmpty(searchTerm))
+                    sql += " WHERE title LIKE @search OR description LIKE @search";
+                sql += " ORDER BY id LIMIT @offset, @pageSize";
+
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                if (!string.IsNullOrEmpty(searchTerm))
+                    cmd.Parameters.AddWithValue("@search", "%" + searchTerm + "%");
+                cmd.Parameters.AddWithValue("@offset", offset);
+                cmd.Parameters.AddWithValue("@pageSize", PageSize);
+
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                da.Fill(dt);
+                conn.Close();
+            }
+
+            gvProblems.DataSource = dt;
+            gvProblems.DataBind();
+
+            // 生成分页链接 (带上view=problems)
+            List<ListItem> pages = new List<ListItem>();
+            for (int i = 1; i <= totalPages; i++)
+            {
+                string url = "admin.aspx?view=problems&problemPage=" + i;
+                ListItem li = new ListItem("第" + i + "页", url);
+                if (i == pageIndex) li.Selected = true;
+                pages.Add(li);
+            }
+
+            rptProblemPagination.DataSource = pages;
+            rptProblemPagination.DataBind();
         }
         #endregion
 
-        #region 绑定题单和比赛GridView
-        // 绑定题单（分类）数据
+        #region 分类(题单)列表分页与绑定
         private void BindCategoriesGrid()
         {
-            string searchTerm = txtCategorySearch.Text.Trim();
-            using (MySqlConnection conn = new MySqlConnection(connStr))
+            int pageIndex = 1;
+            if (!string.IsNullOrEmpty(Request.QueryString["categoryPage"]))
             {
-                string query = "SELECT category_id, category_name, created_at FROM categories";
-                if (!string.IsNullOrEmpty(searchTerm))
-                    query += " WHERE category_name LIKE @search";
-                MySqlDataAdapter da = new MySqlDataAdapter(query, conn);
-                if (!string.IsNullOrEmpty(searchTerm))
-                    da.SelectCommand.Parameters.AddWithValue("@search", "%" + searchTerm + "%");
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-                gvCategories.DataSource = dt;
-                gvCategories.DataBind();
+                int.TryParse(Request.QueryString["categoryPage"], out pageIndex);
+                if (pageIndex <= 0) pageIndex = 1;
             }
-        }
 
-        // 绑定比赛数据
-        private void BindCompetitionsGrid()
-        {
-            string searchTerm = txtCompetitionSearch.Text.Trim();
+            string searchTerm = txtCategorySearch.Text.Trim();
+
+            int totalRecords = 0;
             using (MySqlConnection conn = new MySqlConnection(connStr))
             {
-                string query = "SELECT competition_id, competition_name, start_time, end_time, created_at FROM competitions";
+                conn.Open();
+                string countSql = "SELECT COUNT(*) FROM categories";
                 if (!string.IsNullOrEmpty(searchTerm))
-                    query += " WHERE competition_name LIKE @search";
-                MySqlDataAdapter da = new MySqlDataAdapter(query, conn);
+                    countSql += " WHERE category_name LIKE @search";
+
+                MySqlCommand cmdCount = new MySqlCommand(countSql, conn);
                 if (!string.IsNullOrEmpty(searchTerm))
-                    da.SelectCommand.Parameters.AddWithValue("@search", "%" + searchTerm + "%");
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-                gvCompetitions.DataSource = dt;
-                gvCompetitions.DataBind();
+                    cmdCount.Parameters.AddWithValue("@search", "%" + searchTerm + "%");
+                object obj = cmdCount.ExecuteScalar();
+                totalRecords = (obj == null) ? 0 : Convert.ToInt32(obj);
+                conn.Close();
             }
+
+            int totalPages = (int)Math.Ceiling((double)totalRecords / PageSize);
+            if (totalPages < 1) totalPages = 1;
+            if (pageIndex > totalPages) pageIndex = totalPages;
+            int offset = (pageIndex - 1) * PageSize;
+
+            DataTable dt = new DataTable();
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                conn.Open();
+                string sql = "SELECT category_id, category_name, created_at FROM categories";
+                if (!string.IsNullOrEmpty(searchTerm))
+                    sql += " WHERE category_name LIKE @search";
+                sql += " ORDER BY category_id LIMIT @offset, @pageSize";
+
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                if (!string.IsNullOrEmpty(searchTerm))
+                    cmd.Parameters.AddWithValue("@search", "%" + searchTerm + "%");
+                cmd.Parameters.AddWithValue("@offset", offset);
+                cmd.Parameters.AddWithValue("@pageSize", PageSize);
+
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                da.Fill(dt);
+                conn.Close();
+            }
+
+            gvCategories.DataSource = dt;
+            gvCategories.DataBind();
+
+            // 生成分页链接 (带上view=categories)
+            List<ListItem> pages = new List<ListItem>();
+            for (int i = 1; i <= totalPages; i++)
+            {
+                string url = "admin.aspx?view=categories&categoryPage=" + i;
+                ListItem li = new ListItem("第" + i + "页", url);
+                if (i == pageIndex) li.Selected = true;
+                pages.Add(li);
+            }
+
+            rptCategoryPagination.DataSource = pages;
+            rptCategoryPagination.DataBind();
         }
         #endregion
 
-        #region 导航栏点击
+        #region 比赛列表分页与绑定
+        private void BindCompetitionsGrid()
+        {
+            int pageIndex = 1;
+            if (!string.IsNullOrEmpty(Request.QueryString["competitionPage"]))
+            {
+                int.TryParse(Request.QueryString["competitionPage"], out pageIndex);
+                if (pageIndex <= 0) pageIndex = 1;
+            }
+
+            string searchTerm = txtCompetitionSearch.Text.Trim();
+
+            int totalRecords = 0;
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                conn.Open();
+                string countSql = "SELECT COUNT(*) FROM competitions";
+                if (!string.IsNullOrEmpty(searchTerm))
+                    countSql += " WHERE competition_name LIKE @search";
+
+                MySqlCommand cmdCount = new MySqlCommand(countSql, conn);
+                if (!string.IsNullOrEmpty(searchTerm))
+                    cmdCount.Parameters.AddWithValue("@search", "%" + searchTerm + "%");
+                object obj = cmdCount.ExecuteScalar();
+                totalRecords = (obj == null) ? 0 : Convert.ToInt32(obj);
+                conn.Close();
+            }
+
+            int totalPages = (int)Math.Ceiling((double)totalRecords / PageSize);
+            if (totalPages < 1) totalPages = 1;
+            if (pageIndex > totalPages) pageIndex = totalPages;
+            int offset = (pageIndex - 1) * PageSize;
+
+            DataTable dt = new DataTable();
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                conn.Open();
+                string sql = "SELECT competition_id, competition_name, start_time, end_time, created_at FROM competitions";
+                if (!string.IsNullOrEmpty(searchTerm))
+                {
+                    sql += " WHERE competition_name LIKE @search";
+                }
+                sql += " ORDER BY competition_id LIMIT @offset, @pageSize";
+
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                if (!string.IsNullOrEmpty(searchTerm))
+                    cmd.Parameters.AddWithValue("@search", "%" + searchTerm + "%");
+                cmd.Parameters.AddWithValue("@offset", offset);
+                cmd.Parameters.AddWithValue("@pageSize", PageSize);
+
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                da.Fill(dt);
+                conn.Close();
+            }
+
+            gvCompetitions.DataSource = dt;
+            gvCompetitions.DataBind();
+
+            // 生成分页链接 (带上view=competitions)
+            List<ListItem> pages = new List<ListItem>();
+            for (int i = 1; i <= totalPages; i++)
+            {
+                string url = "admin.aspx?view=competitions&competitionPage=" + i;
+                ListItem li = new ListItem("第" + i + "页", url);
+                if (i == pageIndex) li.Selected = true;
+                pages.Add(li);
+            }
+
+            rptCompetitionPagination.DataSource = pages;
+            rptCompetitionPagination.DataBind();
+        }
+        #endregion
+
+        #region 点击导航链接
         protected void lnkUsers_Click(object sender, EventArgs e)
         {
-            MultiView1.SetActiveView(viewUserOverview);
+            Response.Redirect("admin.aspx?view=users&userPage=1");
         }
         protected void lnkProblems_Click(object sender, EventArgs e)
         {
-            MultiView1.SetActiveView(viewProblemOverview);
+            Response.Redirect("admin.aspx?view=problems&problemPage=1");
         }
+
         protected void lnkCategories_Click(object sender, EventArgs e)
         {
-            MultiView1.SetActiveView(viewCategoryOverview);
+            Response.Redirect("admin.aspx?view=categories&categoryPage=1");
         }
+
         protected void lnkCompetitions_Click(object sender, EventArgs e)
         {
-            MultiView1.SetActiveView(viewCompetitionOverview);
+            Response.Redirect("admin.aspx?view=competitions&competitionPage=1");
         }
         #endregion
 
-        #region 分页处理——统一在 RowCommand 中
+        #region GridView RowCommand (仅用于 编辑/删除)
         protected void gv_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             GridView gv = sender as GridView;
             if (gv == null)
                 return;
-            if (e.CommandName == "Page")
+
+            // 用户Grid
+            if (gv.ID == "gvUsers")
             {
-                int newIndex;
-                if (int.TryParse(e.CommandArgument.ToString(), out newIndex))
+                if (e.CommandName == "EditUser")
                 {
-                    if (newIndex < 0)
-                        newIndex = 0;
-                    if (gv.ID == "gvUsers")
-                    {
-                        if (newIndex >= gvUsers.PageCount)
-                            newIndex = gvUsers.PageCount - 1;
-                        gvUsers.PageIndex = newIndex;
-                        BindUsersGrid();
-                    }
-                    else if (gv.ID == "gvProblems")
-                    {
-                        if (newIndex >= gvProblems.PageCount)
-                            newIndex = gvProblems.PageCount - 1;
-                        gvProblems.PageIndex = newIndex;
-                        BindProblemsGrid();
-                    }
-                    else if (gv.ID == "gvCategories")
-                    {
-                        if (newIndex >= gvCategories.PageCount)
-                            newIndex = gvCategories.PageCount - 1;
-                        gvCategories.PageIndex = newIndex;
-                        BindCategoriesGrid();
-                    }
-                    else if (gv.ID == "gvCompetitions")
-                    {
-                        if (newIndex >= gvCompetitions.PageCount)
-                            newIndex = gvCompetitions.PageCount - 1;
-                        gvCompetitions.PageIndex = newIndex;
-                        BindCompetitionsGrid();
-                    }
+                    int userId = Convert.ToInt32(e.CommandArgument);
+                    LoadUserDetail(userId);
+
+                    // 存储当前URL，用于取消时返回
+                    Session["ReturnUrl"] = Request.RawUrl;
+
+                    MultiView1.SetActiveView(viewUserDetail);
+                }
+                else if (e.CommandName == "DeleteUser")
+                {
+                    int userId = Convert.ToInt32(e.CommandArgument);
+                    DeleteUser(userId);
+                    BindUsersGrid();
                 }
             }
-            else
+            // 题目Grid
+            else if (gv.ID == "gvProblems")
             {
-                // 根据GridView的ID处理编辑和删除命令
-                if (gv.ID == "gvUsers")
+                if (e.CommandName == "EditProblem")
                 {
-                    if (e.CommandName == "EditUser")
-                    {
-                        int userId = Convert.ToInt32(e.CommandArgument);
-                        LoadUserDetail(userId);
-                        MultiView1.SetActiveView(viewUserDetail);
-                    }
-                    else if (e.CommandName == "DeleteUser")
-                    {
-                        int userId = Convert.ToInt32(e.CommandArgument);
-                        DeleteUser(userId);
-                        BindUsersGrid();
-                    }
+                    int problemId = Convert.ToInt32(e.CommandArgument);
+                    LoadProblemDetail(problemId);
+
+                    // 存储当前URL，用于取消时返回
+                    Session["ReturnUrl"] = Request.RawUrl;
+
+                    MultiView1.SetActiveView(viewProblemDetail);
                 }
-                else if (gv.ID == "gvProblems")
+                else if (e.CommandName == "DeleteProblem")
                 {
-                    if (e.CommandName == "EditProblem")
-                    {
-                        int problemId = Convert.ToInt32(e.CommandArgument);
-                        LoadProblemDetail(problemId);
-                        MultiView1.SetActiveView(viewProblemDetail);
-                    }
-                    else if (e.CommandName == "DeleteProblem")
-                    {
-                        int problemId = Convert.ToInt32(e.CommandArgument);
-                        DeleteProblem(problemId);
-                        BindProblemsGrid();
-                    }
+                    int problemId = Convert.ToInt32(e.CommandArgument);
+                    DeleteProblem(problemId);
+                    BindProblemsGrid();
                 }
-                else if (gv.ID == "gvCategories")
+            }
+            // 分类Grid
+            else if (gv.ID == "gvCategories")
+            {
+                if (e.CommandName == "EditCategory")
                 {
-                    if (e.CommandName == "EditCategory")
-                    {
-                        int categoryId = Convert.ToInt32(e.CommandArgument);
-                        LoadCategoryDetail(categoryId);
-                        MultiView1.SetActiveView(viewCategoryDetail);
-                    }
-                    else if (e.CommandName == "DeleteCategory")
-                    {
-                        int categoryId = Convert.ToInt32(e.CommandArgument);
-                        DeleteCategory(categoryId);
-                        BindCategoriesGrid();
-                    }
+                    int categoryId = Convert.ToInt32(e.CommandArgument);
+                    LoadCategoryDetail(categoryId);
+
+                    // 存储当前URL，用于取消时返回
+                    Session["ReturnUrl"] = Request.RawUrl;
+
+                    MultiView1.SetActiveView(viewCategoryDetail);
                 }
-                else if (gv.ID == "gvCompetitions")
+                else if (e.CommandName == "DeleteCategory")
                 {
-                    if (e.CommandName == "EditCompetition")
-                    {
-                        int competitionId = Convert.ToInt32(e.CommandArgument);
-                        LoadCompetitionDetail(competitionId);
-                        MultiView1.SetActiveView(viewCompetitionDetail);
-                    }
-                    else if (e.CommandName == "DeleteCompetition")
-                    {
-                        int competitionId = Convert.ToInt32(e.CommandArgument);
-                        DeleteCompetition(competitionId);
-                        BindCompetitionsGrid();
-                    }
+                    int categoryId = Convert.ToInt32(e.CommandArgument);
+                    DeleteCategory(categoryId);
+                    BindCategoriesGrid();
+                }
+            }
+            // 比赛Grid
+            else if (gv.ID == "gvCompetitions")
+            {
+                if (e.CommandName == "EditCompetition")
+                {
+                    int competitionId = Convert.ToInt32(e.CommandArgument);
+                    LoadCompetitionDetail(competitionId);
+
+                    // 存储当前URL，用于取消时返回
+                    Session["ReturnUrl"] = Request.RawUrl;
+
+                    MultiView1.SetActiveView(viewCompetitionDetail);
+                }
+                else if (e.CommandName == "DeleteCompetition")
+                {
+                    int competitionId = Convert.ToInt32(e.CommandArgument);
+                    DeleteCompetition(competitionId);
+                    BindCompetitionsGrid();
                 }
             }
         }
         #endregion
 
-        #region 自定义分页按钮生成（RowCreated事件）
-        protected void gvUsers_RowCreated(object sender, GridViewRowEventArgs e)
-        {
-            if (e.Row.RowType == DataControlRowType.Pager)
-            {
-                GridView gv = (GridView)sender;
-                // 上一页按钮
-                LinkButton lnkPrev = (LinkButton)e.Row.FindControl("lnkPrev");
-                if (lnkPrev != null)
-                {
-                    int prevIndex = gv.PageIndex - 1;
-                    if (prevIndex < 0)
-                        lnkPrev.Visible = false;
-                    else
-                    {
-                        lnkPrev.Visible = true;
-                        lnkPrev.CommandArgument = prevIndex.ToString();
-                    }
-                }
-                // 下一页按钮
-                LinkButton lnkNext = (LinkButton)e.Row.FindControl("lnkNext");
-                if (lnkNext != null)
-                {
-                    int nextIndex = gv.PageIndex + 1;
-                    if (nextIndex >= gv.PageCount)
-                        lnkNext.Visible = false;
-                    else
-                    {
-                        lnkNext.Visible = true;
-                        lnkNext.CommandArgument = nextIndex.ToString();
-                    }
-                }
-                // 生成中间数字按钮
-                PlaceHolder ph = (PlaceHolder)e.Row.FindControl("phNumeric");
-                if (ph != null)
-                {
-                    ph.Controls.Clear();
-                    int pageCount = gv.PageCount;
-                    if (pageCount <= 1)
-                        return;
-                    for (int i = 0; i < pageCount; i++)
-                    {
-                        LinkButton lb = new LinkButton();
-                        lb.Text = (i + 1).ToString(); // 显示页码从1开始
-                        lb.CommandName = "Page";
-                        lb.CommandArgument = i.ToString(); // 页码索引（0表示第一页）
-                        lb.CssClass = "pager-btn";
-                        if (i == gv.PageIndex)
-                        {
-                            lb.Enabled = false;
-                            lb.CssClass += " current-page";
-                        }
-                        ph.Controls.Add(lb);
-                    }
-                }
-            }
-        }
-
-        protected void gvProblems_RowCreated(object sender, GridViewRowEventArgs e)
-        {
-            if (e.Row.RowType == DataControlRowType.Pager)
-            {
-                GridView gv = (GridView)sender;
-                LinkButton lnkPrev = (LinkButton)e.Row.FindControl("lnkPrev");
-                if (lnkPrev != null)
-                {
-                    int prevIndex = gv.PageIndex - 1;
-                    if (prevIndex < 0)
-                        lnkPrev.Visible = false;
-                    else
-                    {
-                        lnkPrev.Visible = true;
-                        lnkPrev.CommandArgument = prevIndex.ToString();
-                    }
-                }
-                LinkButton lnkNext = (LinkButton)e.Row.FindControl("lnkNext");
-                if (lnkNext != null)
-                {
-                    int nextIndex = gv.PageIndex + 1;
-                    if (nextIndex >= gv.PageCount)
-                        lnkNext.Visible = false;
-                    else
-                    {
-                        lnkNext.Visible = true;
-                        lnkNext.CommandArgument = nextIndex.ToString();
-                    }
-                }
-                PlaceHolder ph = (PlaceHolder)e.Row.FindControl("phNumeric");
-                if (ph != null)
-                {
-                    ph.Controls.Clear();
-                    int pageCount = gv.PageCount;
-                    if (pageCount <= 1)
-                        return;
-                    for (int i = 0; i < pageCount; i++)
-                    {
-                        LinkButton lb = new LinkButton();
-                        lb.Text = (i + 1).ToString();
-                        lb.CommandName = "Page";
-                        lb.CommandArgument = i.ToString();
-                        lb.CssClass = "pager-btn";
-                        if (i == gv.PageIndex)
-                        {
-                            lb.Enabled = false;
-                            lb.CssClass += " current-page";
-                        }
-                        ph.Controls.Add(lb);
-                    }
-                }
-            }
-        }
-
-        protected void gvCategories_RowCreated(object sender, GridViewRowEventArgs e)
-        {
-            if (e.Row.RowType == DataControlRowType.Pager)
-            {
-                GridView gv = (GridView)sender;
-                LinkButton lnkPrev = (LinkButton)e.Row.FindControl("lnkPrev");
-                if (lnkPrev != null)
-                {
-                    int prevIndex = gv.PageIndex - 1;
-                    if (prevIndex < 0)
-                        lnkPrev.Visible = false;
-                    else
-                    {
-                        lnkPrev.Visible = true;
-                        lnkPrev.CommandArgument = prevIndex.ToString();
-                    }
-                }
-                LinkButton lnkNext = (LinkButton)e.Row.FindControl("lnkNext");
-                if (lnkNext != null)
-                {
-                    int nextIndex = gv.PageIndex + 1;
-                    if (nextIndex >= gv.PageCount)
-                        lnkNext.Visible = false;
-                    else
-                    {
-                        lnkNext.Visible = true;
-                        lnkNext.CommandArgument = nextIndex.ToString();
-                    }
-                }
-                PlaceHolder ph = (PlaceHolder)e.Row.FindControl("phNumeric");
-                if (ph != null)
-                {
-                    ph.Controls.Clear();
-                    int pageCount = gv.PageCount;
-                    if (pageCount <= 1)
-                        return;
-                    for (int i = 0; i < pageCount; i++)
-                    {
-                        LinkButton lb = new LinkButton();
-                        lb.Text = (i + 1).ToString();
-                        lb.CommandName = "Page";
-                        lb.CommandArgument = i.ToString();
-                        lb.CssClass = "pager-btn";
-                        if (i == gv.PageIndex)
-                        {
-                            lb.Enabled = false;
-                            lb.CssClass += " current-page";
-                        }
-                        ph.Controls.Add(lb);
-                    }
-                }
-            }
-        }
-
-        protected void gvCompetitions_RowCreated(object sender, GridViewRowEventArgs e)
-        {
-            if (e.Row.RowType == DataControlRowType.Pager)
-            {
-                GridView gv = (GridView)sender;
-                LinkButton lnkPrev = (LinkButton)e.Row.FindControl("lnkPrev");
-                if (lnkPrev != null)
-                {
-                    int prevIndex = gv.PageIndex - 1;
-                    if (prevIndex < 0)
-                        lnkPrev.Visible = false;
-                    else
-                    {
-                        lnkPrev.Visible = true;
-                        lnkPrev.CommandArgument = prevIndex.ToString();
-                    }
-                }
-                LinkButton lnkNext = (LinkButton)e.Row.FindControl("lnkNext");
-                if (lnkNext != null)
-                {
-                    int nextIndex = gv.PageIndex + 1;
-                    if (nextIndex >= gv.PageCount)
-                        lnkNext.Visible = false;
-                    else
-                    {
-                        lnkNext.Visible = true;
-                        lnkNext.CommandArgument = nextIndex.ToString();
-                    }
-                }
-                PlaceHolder ph = (PlaceHolder)e.Row.FindControl("phNumeric");
-                if (ph != null)
-                {
-                    ph.Controls.Clear();
-                    int pageCount = gv.PageCount;
-                    if (pageCount <= 1)
-                        return;
-                    for (int i = 0; i < pageCount; i++)
-                    {
-                        LinkButton lb = new LinkButton();
-                        lb.Text = (i + 1).ToString();
-                        lb.CommandName = "Page";
-                        lb.CommandArgument = i.ToString();
-                        lb.CssClass = "pager-btn";
-                        if (i == gv.PageIndex)
-                        {
-                            lb.Enabled = false;
-                            lb.CssClass += " current-page";
-                        }
-                        ph.Controls.Add(lb);
-                    }
-                }
-            }
-        }
-        #endregion
-
-        #region 详细编辑数据加载
-        // 加载指定用户详细信息
+        #region 加载编辑数据
         private void LoadUserDetail(int userId)
         {
             using (MySqlConnection conn = new MySqlConnection(connStr))
@@ -498,7 +491,6 @@ namespace YourNamespace
             }
         }
 
-        // 加载指定题目详细信息
         private void LoadProblemDetail(int problemId)
         {
             using (MySqlConnection conn = new MySqlConnection(connStr))
@@ -524,7 +516,6 @@ namespace YourNamespace
             }
         }
 
-        // 加载指定题单（分类）的详细信息，包括关联题目（逗号分隔的题目ID列表）
         private void LoadCategoryDetail(int categoryId)
         {
             using (MySqlConnection conn = new MySqlConnection(connStr))
@@ -541,19 +532,18 @@ namespace YourNamespace
                     lblCategoryIdValue.Text = categoryId.ToString();
                     txtCategoryName.Text = reader["category_name"].ToString();
                 }
-                conn.Close();
+                reader.Close();
+
                 // 加载该题单关联的题目ID列表
                 string query2 = "SELECT GROUP_CONCAT(problem_id) AS problems FROM category_problems WHERE category_id=@id";
                 MySqlCommand cmd2 = new MySqlCommand(query2, conn);
                 cmd2.Parameters.AddWithValue("@id", categoryId);
-                conn.Open();
                 object obj = cmd2.ExecuteScalar();
                 conn.Close();
                 txtCategoryProblems.Text = (obj != null && obj != DBNull.Value) ? obj.ToString() : "";
             }
         }
 
-        // 加载指定比赛的详细信息，包括关联题目（逗号分隔的题目ID列表）
         private void LoadCompetitionDetail(int competitionId)
         {
             using (MySqlConnection conn = new MySqlConnection(connStr))
@@ -572,12 +562,12 @@ namespace YourNamespace
                     txtStartTime.Text = reader["start_time"].ToString();
                     txtEndTime.Text = reader["end_time"].ToString();
                 }
-                conn.Close();
+                reader.Close();
+
                 // 加载比赛关联的题目ID列表
                 string query2 = "SELECT GROUP_CONCAT(problem_id) AS problems FROM competition_problems WHERE competition_id=@id";
                 MySqlCommand cmd2 = new MySqlCommand(query2, conn);
                 cmd2.Parameters.AddWithValue("@id", competitionId);
-                conn.Open();
                 object obj = cmd2.ExecuteScalar();
                 conn.Close();
                 txtCompetitionProblems.Text = (obj != null && obj != DBNull.Value) ? obj.ToString() : "";
@@ -585,8 +575,7 @@ namespace YourNamespace
         }
         #endregion
 
-        #region 保存操作
-        // 保存用户编辑数据
+        #region 保存
         protected void btnSaveUser_Click(object sender, EventArgs e)
         {
             int uid = Convert.ToInt32(lblUserIdValue.Text);
@@ -603,10 +592,10 @@ namespace YourNamespace
                 conn.Close();
             }
             BindUsersGrid();
+            // 编辑完用户后，切回用户管理视图
             MultiView1.SetActiveView(viewUserOverview);
         }
 
-        // 保存题目编辑数据
         protected void btnSaveProblem_Click(object sender, EventArgs e)
         {
             int pid = Convert.ToInt32(lblProblemIdValue.Text);
@@ -631,10 +620,10 @@ namespace YourNamespace
                 conn.Close();
             }
             BindProblemsGrid();
+            // 编辑完题目后，切回题目管理视图
             MultiView1.SetActiveView(viewProblemOverview);
         }
 
-        // 保存题单编辑数据，包括更新关联题目（category_problems 表）
         protected void btnSaveCategory_Click(object sender, EventArgs e)
         {
             int cid = Convert.ToInt32(lblCategoryIdValue.Text);
@@ -652,10 +641,10 @@ namespace YourNamespace
             // 更新关联题目
             UpdateCategoryProblems(cid, txtCategoryProblems.Text.Trim());
             BindCategoriesGrid();
+            // 编辑完题单后，切回题单管理视图
             MultiView1.SetActiveView(viewCategoryOverview);
         }
 
-        // 保存比赛编辑数据，包括更新关联题目（competition_problems 表）
         protected void btnSaveCompetition_Click(object sender, EventArgs e)
         {
             int compId = Convert.ToInt32(lblCompetitionIdValue.Text);
@@ -674,12 +663,12 @@ namespace YourNamespace
             // 更新比赛关联题目
             UpdateCompetitionProblems(compId, txtCompetitionProblems.Text.Trim());
             BindCompetitionsGrid();
+            // 编辑完比赛后，切回比赛管理视图
             MultiView1.SetActiveView(viewCompetitionOverview);
         }
         #endregion
 
-        #region 删除操作
-        // 删除指定用户
+        #region 删除
         private void DeleteUser(int userId)
         {
             using (MySqlConnection conn = new MySqlConnection(connStr))
@@ -693,7 +682,6 @@ namespace YourNamespace
             }
         }
 
-        // 删除指定题目
         private void DeleteProblem(int problemId)
         {
             using (MySqlConnection conn = new MySqlConnection(connStr))
@@ -707,7 +695,6 @@ namespace YourNamespace
             }
         }
 
-        // 删除指定题单
         private void DeleteCategory(int categoryId)
         {
             using (MySqlConnection conn = new MySqlConnection(connStr))
@@ -729,7 +716,6 @@ namespace YourNamespace
             }
         }
 
-        // 删除指定比赛
         private void DeleteCompetition(int competitionId)
         {
             using (MySqlConnection conn = new MySqlConnection(connStr))
@@ -753,7 +739,6 @@ namespace YourNamespace
         #endregion
 
         #region 添加新记录
-        // 添加新用户记录，默认“未编辑”
         protected void btnAddUser_Click(object sender, EventArgs e)
         {
             using (MySqlConnection conn = new MySqlConnection(connStr))
@@ -770,7 +755,6 @@ namespace YourNamespace
             BindUsersGrid();
         }
 
-        // 添加新题目记录，默认 difficulty 为 "Easy"
         protected void btnAddProblem_Click(object sender, EventArgs e)
         {
             using (MySqlConnection conn = new MySqlConnection(connStr))
@@ -791,7 +775,6 @@ namespace YourNamespace
             BindProblemsGrid();
         }
 
-        // 添加新题单记录，新题单初始时无关联题目
         protected void btnAddCategory_Click(object sender, EventArgs e)
         {
             using (MySqlConnection conn = new MySqlConnection(connStr))
@@ -805,13 +788,13 @@ namespace YourNamespace
             }
             BindCategoriesGrid();
         }
-        // 获取下一个比赛ID（假设 competition_id 为整数）
+
+        // 如果 competition_id 不是自动递增，可以手动获取下一个ID
         private int GetNextCompetitionId()
         {
             int nextId = 1;
             using (MySqlConnection conn = new MySqlConnection(connStr))
             {
-                // 查询当前最大的比赛ID，若为空则返回0
                 string query = "SELECT IFNULL(MAX(competition_id), 0) FROM competitions";
                 MySqlCommand cmd = new MySqlCommand(query, conn);
                 conn.Open();
@@ -822,14 +805,14 @@ namespace YourNamespace
             }
             return nextId;
         }
-        // 修改后的添加新比赛记录方法
+
         protected void btnAddCompetition_Click(object sender, EventArgs e)
         {
-            int newId = GetNextCompetitionId(); // 获取下一个有效的比赛ID
+            int newId = GetNextCompetitionId();
             using (MySqlConnection conn = new MySqlConnection(connStr))
             {
-                // 注意此处将 competition_id 显式插入
-                string query = "INSERT INTO competitions (competition_id, competition_name, start_time, end_time) VALUES (@id, @name, @start, @end)";
+                string query = "INSERT INTO competitions (competition_id, competition_name, start_time, end_time) " +
+                               "VALUES (@id, @name, @start, @end)";
                 MySqlCommand cmd = new MySqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@id", newId);
                 cmd.Parameters.AddWithValue("@name", "未编辑");
@@ -843,18 +826,22 @@ namespace YourNamespace
         }
         #endregion
 
-        #region 统一取消编辑返回概览
+        #region 取消编辑
         protected void btnCancel_Click(object sender, EventArgs e)
         {
-            // 根据当前活动视图返回对应概览
-            if (MultiView1.ActiveViewIndex == 4)
+            // 如果Session里有“返回URL”，则跳回
+            if (Session["ReturnUrl"] != null)
+            {
+                string returnUrl = Session["ReturnUrl"].ToString();
+                // 用完后清掉，避免下次操作误用
+                Session.Remove("ReturnUrl");
+                Response.Redirect(returnUrl);
+            }
+            else
+            {
+                // 若没存URL，则默认回到用户管理视图(或你想要的其他视图)
                 MultiView1.SetActiveView(viewUserOverview);
-            else if (MultiView1.ActiveViewIndex == 5)
-                MultiView1.SetActiveView(viewProblemOverview);
-            else if (MultiView1.ActiveViewIndex == 6)
-                MultiView1.SetActiveView(viewCategoryOverview);
-            else if (MultiView1.ActiveViewIndex == 7)
-                MultiView1.SetActiveView(viewCompetitionOverview);
+            }
         }
         #endregion
 
@@ -877,9 +864,10 @@ namespace YourNamespace
         }
         #endregion
 
-        #region 返回首页（退出登录）
+        #region 返回首页
         protected void btnHome_Click(object sender, EventArgs e)
         {
+            // 如果有登录Cookies之类，退出时可删除
             if (Request.Cookies["UserInfo"] != null)
             {
                 HttpCookie cookie = new HttpCookie("UserInfo");
@@ -890,20 +878,19 @@ namespace YourNamespace
         }
         #endregion
 
-        #region 辅助方法：更新题单和比赛的关联题目
-        // 根据传入的 categoryId 和逗号分隔的 problemId 字符串，更新 category_problems 表
+        #region 更新题单/比赛的关联题目
         private void UpdateCategoryProblems(int categoryId, string problems)
         {
             using (MySqlConnection conn = new MySqlConnection(connStr))
             {
                 conn.Open();
-                // 先删除该题单的所有关联关系
+                // 先删掉旧关联
                 string delQuery = "DELETE FROM category_problems WHERE category_id=@cid";
                 MySqlCommand delCmd = new MySqlCommand(delQuery, conn);
                 delCmd.Parameters.AddWithValue("@cid", categoryId);
                 delCmd.ExecuteNonQuery();
 
-                // 如果问题字符串非空，则插入新的关联关系
+                // 插入新关联
                 if (!string.IsNullOrEmpty(problems))
                 {
                     string[] arr = problems.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -924,19 +911,18 @@ namespace YourNamespace
             }
         }
 
-        // 根据传入的 competitionId 和逗号分隔的 problemId 字符串，更新 competition_problems 表
         private void UpdateCompetitionProblems(int competitionId, string problems)
         {
             using (MySqlConnection conn = new MySqlConnection(connStr))
             {
                 conn.Open();
-                // 删除该比赛的所有关联关系
+                // 删除旧关联
                 string delQuery = "DELETE FROM competition_problems WHERE competition_id=@cid";
-                MySqlCommand delCmd = new MySqlCommand(delQuery, conn);
-                delCmd.Parameters.AddWithValue("@cid", competitionId);
-                delCmd.ExecuteNonQuery();
+                MySqlCommand cmdDel = new MySqlCommand(delQuery, conn);
+                cmdDel.Parameters.AddWithValue("@cid", competitionId);
+                cmdDel.ExecuteNonQuery();
 
-                // 插入新的关联关系（如果有输入）
+                // 插入新关联
                 if (!string.IsNullOrEmpty(problems))
                 {
                     string[] arr = problems.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);

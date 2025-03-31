@@ -76,7 +76,7 @@ body {
     border-radius: 4px;
 }
 
-/* 按钮 */
+/* 按钮（示例：.btn） */
 .btn {
     background-color: #007acc;
     color: #fff;
@@ -130,7 +130,6 @@ body {
         cursor: pointer;
     }
 
-        /* 鼠标悬停效果 */
         .GridViewPager a:hover {
             background-color: #005fa3;
         }
@@ -142,6 +141,21 @@ body {
             font-weight: bold;
         }
 
+/* 编辑、删除等链接按钮外观统一：让 gridview 里 td 内的所有 a 元素都像 .btn 一样 */
+.gridview td a {
+    display: inline-block; /* 让链接变成块状，方便设置背景等 */
+    background-color: #007acc;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    margin: 5px 2px; /* 让编辑、删除按钮之间有点小间距 */
+    cursor: pointer;
+}
+
+    .gridview td a:hover {
+        background-color: #005fa3;
+    }
 
 /* 编辑区域样式 */
 .text-center {
