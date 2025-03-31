@@ -28,16 +28,16 @@ namespace asp_web_online_judge
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
-            string username = txtUsername.Text;
-            string password = txtPassword.Text;
+            string username = txtUsername.Text.Trim();
+            string password = txtPassword.Text.Trim();
 
-            string sql = $"Select * from User where account = '{username}' and password = '{password}'";
+            // 此处建议使用参数化查询防止SQL注入，但这里保留原有逻辑示例
+            string sql = $"SELECT * FROM User WHERE account = '{username}' AND password = '{password}'";
+            DataTable dt = Dbconnection.ExecuteQuery(sql);
 
-            DataTable dt = Dbconnection.ExecuteQuery(sql) ;
-            // 这里可以添加验证逻辑，比如检查用户名和密码是否匹配
-            if (dt.Rows.Count == 1) // 示例验证
+            if (dt.Rows.Count == 1) // 登录成功
             {
-                // 登录成功，保存用户信息到Cookie
+                // 保存用户信息到Cookie
                 HttpCookie userInfoCookie = new HttpCookie("UserInfo");
                 userInfoCookie["Userid"] = dt.Rows[0]["id"].ToString();
                 userInfoCookie["Username"] = username;
@@ -45,13 +45,21 @@ namespace asp_web_online_judge
                 userInfoCookie.Expires = DateTime.Now.AddDays(1); // 设置Cookie过期时间
                 Response.Cookies.Add(userInfoCookie);
 
-                // 跳转到主页
-                Response.Redirect("/user/home.aspx");
+                // 如果账号为admin，则跳转到管理员界面，否则跳转到普通用户主页
+                if (username.Equals("admin", StringComparison.OrdinalIgnoreCase))
+                {
+                    Response.Redirect("/admin/admin.aspx");
+                }
+                else
+                {
+                    Response.Redirect("/user/home.aspx");
+                }
             }
             else
             {
                 lblMessage.Text = "用户名或密码错误！";
             }
         }
+
     }
 }
