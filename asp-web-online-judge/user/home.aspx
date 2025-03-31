@@ -1,11 +1,11 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="home.aspx.cs" Inherits="asp_web_online_judge.home" %>
 
 <!DOCTYPE html>
-
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="./css/home.css" rel="stylesheet" type="text/css"/>
     <link href="./css/navbar-fixed-top.css" rel="stylesheet" type="text/css"/>
@@ -14,56 +14,65 @@
 <body>
     <form id="form1" runat="server">
 
-        <nav class = "navbar-fixed-top container-center nav" style = "z-index : 10;">
+        <!-- 顶部导航 -->
+        <nav class="navbar-fixed-top container-center nav" style="z-index: 10;">
             <div class="header child-center text-center title-head">
                 <h1>Welcome to Code Arena Online Judge！</h1>
             </div>
             <div class="nav child-center text-center son-a-center head-list">
-                <div id = "login_register" runat="server"> </div>
+                <div id="login_register" runat="server"></div>
                 <a href="categories.aspx">题单</a>
                 <a href="competitions.aspx">比赛</a>
                 <a href="submissions.aspx">提交记录</a>
             </div>
         </nav>
 
+        <!-- 主内容区域 -->
         <div class="container main-page-home">
 
             <div class="container py-4">
                 <div class="problem-card bg-white p-4 mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2 class="mb-0">题目列表</h2>
-                        <span class="text-muted">共<%= GridView1.Rows.Count %>题</span>
+                        <span class="text-muted">共 <%= GridView1.Rows.Count %> 题</span>
                     </div>
+
+                    <!-- 题目列表 GridView -->
                     <asp:GridView ID="GridView1" runat="server"
-                        CssClass="table table-hover align-middle mb-0"
-                        AutoGenerateColumns="False"
-                        GridLines="None">
+                                  CssClass="table table-hover align-middle mb-0"
+                                  AutoGenerateColumns="False"
+                                  GridLines="None">
                         <Columns>
-                            <asp:BoundField DataField="id" HeaderText="#" 
-                                HeaderStyle-CssClass="text-secondary" />
+                            <asp:BoundField DataField="id" HeaderText="#"
+                                            HeaderStyle-CssClass="text-secondary" />
                             <asp:TemplateField HeaderText="标题" HeaderStyle-CssClass="ps-3">
                                 <ItemTemplate>
-                                    <a href='problem.aspx?id=<%# Eval("id") %>' 
-                                        class="text-decoration-none text-dark fw-medium">
+                                    <a href='problem.aspx?id=<%# Eval("id") %>'
+                                       class="text-decoration-none text-dark fw-medium">
                                         <%# Eval("title") %>
                                     </a>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="难度">
                                 <ItemTemplate>
-                                    <span class='difficulty-badge badge 
+                                    <span class='difficulty-badge badge
                                         <%# GetDifficultyClass(Eval("difficulty").ToString()) %>'>
                                         <%# Eval("difficulty") %>
                                     </span>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:BoundField DataField="time_memory_limit" HeaderText="时空限制" 
-                                HeaderStyle-CssClass="text-nowrap" />
-                            <asp:BoundField DataField="total_accepted" HeaderText="通过数" 
-                                ItemStyle-CssClass="text-success fw-medium" />
+                            <asp:BoundField DataField="time_memory_limit" HeaderText="时空限制"
+                                            HeaderStyle-CssClass="text-nowrap" />
+                            <asp:BoundField DataField="total_accepted" HeaderText="通过数"
+                                            ItemStyle-CssClass="text-success fw-medium" />
                         </Columns>
                         <HeaderStyle CssClass="border-bottom" />
                     </asp:GridView>
+
+                    <!-- 在此处放分页控件的占位符 -->
+                    <div class="d-flex justify-content-center mt-3">
+                        <asp:PlaceHolder ID="phPager" runat="server"></asp:PlaceHolder>
+                    </div>
                 </div>
             </div>
 
@@ -71,6 +80,7 @@
                 <p>&copy; 2025 Code Arena. All rights reserved.</p>
             </div>
         </div>
+
     </form>
 </body>
 </html>
