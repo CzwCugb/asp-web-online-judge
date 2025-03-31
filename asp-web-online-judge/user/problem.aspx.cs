@@ -98,7 +98,8 @@ namespace asp_web_online_judge
 
         protected void SubmitButton_Click(object sender, EventArgs e)
         {
-            string code = CodeBox.Text.Trim();
+            string code = CodeBox.Text;
+
             string language = Request.Form["languageSelector"];
 
             if (string.IsNullOrWhiteSpace(code))
@@ -111,7 +112,10 @@ namespace asp_web_online_judge
             {
                 int userId = GetCurrentUserId();
                 int problemId = int.Parse(Request.QueryString["id"]);
-                int isComp = int.Parse(Request.QueryString["isCompetition"]);
+                string isCompstr = Request.QueryString["isCompetition"];
+                int isComp = -1;
+                if (isCompstr  != null) { isComp = int.Parse(isCompstr); }
+
                 string submissionId = Guid.NewGuid().ToString();
 
                 // 执行判题
