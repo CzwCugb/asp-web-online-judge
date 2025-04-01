@@ -11,7 +11,7 @@
       "RelativeMoniker": "D:0:0:{B07687BA-D09A-42CB-BD6A-4283D66939EF}|asp-web-online-judge\\asp-web-online-judge.csproj|solutionrelative:asp-web-online-judge\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B07687BA-D09A-42CB-BD6A-4283D66939EF}|asp-web-online-judge\\asp-web-online-judge.csproj|d:\\aaa\u5B66\u4E60\\\u672C\u5B66\u671F\\\u5927\u4E09\u4E0B\u6587\u4EF6\\\u5927\u578B\u8F6F\u4EF6\u5F00\u53D1\u4E0B\uFF08asp.net\uFF09\\\u671F\u672B\\asp-web-online-judge\\asp-web-online-judge\\user\\home.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{B07687BA-D09A-42CB-BD6A-4283D66939EF}|asp-web-online-judge\\asp-web-online-judge.csproj|D:\\AAA\u5B66\u4E60\\\u672C\u5B66\u671F\\\u5927\u4E09\u4E0B\u6587\u4EF6\\\u5927\u578B\u8F6F\u4EF6\u5F00\u53D1\u4E0B\uFF08ASP.NET\uFF09\\\u671F\u672B\\asp-web-online-judge\\asp-web-online-judge\\user\\home.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B07687BA-D09A-42CB-BD6A-4283D66939EF}|asp-web-online-judge\\asp-web-online-judge.csproj|solutionrelative:asp-web-online-judge\\user\\home.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -39,7 +39,7 @@
       "RelativeMoniker": "D:0:0:{B07687BA-D09A-42CB-BD6A-4283D66939EF}|asp-web-online-judge\\asp-web-online-judge.csproj|solutionrelative:asp-web-online-judge\\admin\\admin.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B07687BA-D09A-42CB-BD6A-4283D66939EF}|asp-web-online-judge\\asp-web-online-judge.csproj|d:\\aaa\u5B66\u4E60\\\u672C\u5B66\u671F\\\u5927\u4E09\u4E0B\u6587\u4EF6\\\u5927\u578B\u8F6F\u4EF6\u5F00\u53D1\u4E0B\uFF08asp.net\uFF09\\\u671F\u672B\\asp-web-online-judge\\asp-web-online-judge\\user\\home.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
+      "AbsoluteMoniker": "D:0:0:{B07687BA-D09A-42CB-BD6A-4283D66939EF}|asp-web-online-judge\\asp-web-online-judge.csproj|D:\\AAA\u5B66\u4E60\\\u672C\u5B66\u671F\\\u5927\u4E09\u4E0B\u6587\u4EF6\\\u5927\u578B\u8F6F\u4EF6\u5F00\u53D1\u4E0B\uFF08ASP.NET\uFF09\\\u671F\u672B\\asp-web-online-judge\\asp-web-online-judge\\user\\home.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
       "RelativeMoniker": "D:0:0:{B07687BA-D09A-42CB-BD6A-4283D66939EF}|asp-web-online-judge\\asp-web-online-judge.csproj|solutionrelative:asp-web-online-judge\\user\\home.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
     },
     {
@@ -102,8 +102,7 @@
               "RelativeToolTip": "asp-web-online-judge\\user\\home.aspx",
               "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
-              "WhenOpened": "2025-03-31T12:50:22.625Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-31T12:50:22.625Z"
             },
             {
               "$type": "Document",
@@ -115,8 +114,7 @@
               "RelativeToolTip": "asp-web-online-judge\\user\\home.aspx.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAADcAAAAJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-31T12:42:23.722Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-31T12:42:23.722Z"
             },
             {
               "$type": "Document",
@@ -152,8 +150,7 @@
               "RelativeToolTip": "asp-web-online-judge\\user\\home.aspx.designer.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-31T11:01:46.431Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-31T11:01:46.431Z"
             },
             {
               "$type": "Document",
@@ -177,8 +174,7 @@
               "RelativeToolTip": "asp-web-online-judge\\admin\\home.aspx.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-31T10:43:20.228Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-31T10:43:20.228Z"
             },
             {
               "$type": "Document",
@@ -190,8 +186,7 @@
               "RelativeToolTip": "asp-web-online-judge\\admin\\css\\admin.css",
               "ViewState": "AQIAAJgAAAAAAAAAAADwv7YAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-03-31T09:27:32.71Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-31T09:27:32.71Z"
             },
             {
               "$type": "Document",
@@ -216,8 +211,7 @@
               "RelativeToolTip": "asp-web-online-judge\\admin\\admin.aspx",
               "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
-              "WhenOpened": "2025-03-31T09:25:27.06Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-31T09:25:27.06Z"
             },
             {
               "$type": "Document",
@@ -229,8 +223,7 @@
               "RelativeToolTip": "asp-web-online-judge\\user\\login.aspx.cs",
               "ViewState": "AQIAACoAAAAAAAAAAAAIwDIAAAAuAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-31T09:06:42.675Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-31T09:06:42.675Z"
             },
             {
               "$type": "Document",
@@ -254,8 +247,7 @@
               "RelativeToolTip": "asp-web-online-judge\\user\\login.aspx",
               "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
-              "WhenOpened": "2025-03-31T09:06:37.732Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-31T09:06:37.732Z"
             },
             {
               "$type": "Document",
@@ -279,8 +271,7 @@
               "RelativeToolTip": "asp-web-online-judge\\user\\result.aspx.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-31T08:59:47.715Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-31T08:59:47.715Z"
             },
             {
               "$type": "Document",
