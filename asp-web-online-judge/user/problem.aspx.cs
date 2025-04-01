@@ -124,6 +124,9 @@ namespace asp_web_online_judge
                 Session["result"] = testResult;
                 Session["results"] = testResults;
 
+                // 保存源代码到 Session
+                Session["SourceCode"] = code;
+
                 // 确定最终状态
                 string finalStatus = "AC";
                 foreach (var result in testResults)

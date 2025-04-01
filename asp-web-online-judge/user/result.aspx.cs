@@ -16,10 +16,11 @@ namespace asp_web_online_judge
         {
             var results = Session["results"] as List<JudgeResult>;
 
-            // 设置整体状态（假设result是综合状态）
-            var finalResult = Session["result"] as JudgeResult;
-            litStatus.Text = finalResult.Status;
-            statusBox.Attributes["class"] = GetStatusCssClass(finalResult.Status);
+            string sourceCode = Session["SourceCode"] as string;
+            if (!string.IsNullOrEmpty(sourceCode))
+            {
+                litSourceCode.Text = HttpUtility.HtmlEncode(sourceCode);
+            }
 
             // 绑定测试用例结果列表
             rptTestCases.DataSource = results;
@@ -71,6 +72,7 @@ namespace asp_web_online_judge
                 litActual.Text = HttpUtility.HtmlEncode(result.ActualOutput);
             }
         }
+
 
 
 
