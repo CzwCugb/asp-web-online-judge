@@ -156,6 +156,7 @@
     <Content Include="user\javascript\jquery-3.7.1.min.js" />
     <Content Include="user\leaderboard.aspx" />
     <Content Include="user\login.aspx" />
+    <Content Include="user\logout.aspx" />
     <Content Include="user\problem.aspx" />
     <Content Include="user\profile.aspx" />
     <Content Include="user\register.aspx" />
@@ -229,6 +230,13 @@
     </Compile>
     <Compile Include="user\login.aspx.designer.cs">
       <DependentUpon>login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="user\logout.aspx.cs">
+      <DependentUpon>logout.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="user\logout.aspx.designer.cs">
+      <DependentUpon>logout.aspx</DependentUpon>
     </Compile>
     <Compile Include="user\problem.aspx.cs">
       <DependentUpon>problem.aspx</DependentUpon>

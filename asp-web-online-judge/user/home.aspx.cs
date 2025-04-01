@@ -40,6 +40,7 @@ namespace asp_web_online_judge
             if (Request.Cookies["UserInfo"] != null)
             {
                 content.Text = $"<a href=\"profile.aspx\">{Request.Cookies["UserInfo"]["Username"]}</a>";
+                content.Text += "<a href=\"logout.aspx\" style='margin-left:10px;'>退出</a>";
             }
             else
             {
