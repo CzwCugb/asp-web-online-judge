@@ -1,4 +1,6 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="competition_details.aspx.cs" Inherits="asp_web_online_judge.competition_details" %>
+<%@ Register Src="~/user/NavBar.ascx" TagPrefix="uc" TagName="NavBar" %>
+
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -101,6 +103,9 @@
     </style>
 </head>
 <body class="bg-light">
+        <!-- 导航栏控件 -->
+    <uc:NavBar ID="navBar" runat="server" />
+
     <form id="form1" runat="server">
         <div class="container py-4">
             <div class="row g-4">

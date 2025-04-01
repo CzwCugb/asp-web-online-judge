@@ -1,5 +1,7 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="categories.aspx.cs" 
     Inherits="asp_web_online_judge.categories" %>
+<%@ Register Src="~/user/NavBar.ascx" TagPrefix="uc" TagName="NavBar" %>
+
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -32,6 +34,9 @@
     </style>
 </head>
 <body>
+        <!-- 导航栏控件 -->
+    <uc:NavBar ID="navBar" runat="server" />
+
     <form id="form1" runat="server">
         <div class="container py-4">
             <h1 class="h3 mb-4">题单列表</h1>

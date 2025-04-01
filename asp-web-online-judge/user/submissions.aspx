@@ -1,5 +1,8 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="submissions.aspx.cs" Inherits="asp_web_online_judge.submissions" %>
 <!DOCTYPE html>
+<%@ Register Src="~/user/NavBar.ascx" TagPrefix="uc" TagName="NavBar" %>
+
+
 <html>
 <head runat="server">
     <meta charset="utf-8" />
@@ -31,6 +34,9 @@
     </style>
 </head>
 <body>
+        <!-- 导航栏控件 -->
+    <uc:NavBar ID="navBar" runat="server" />
+
     <form id="form1" runat="server">
         <div class="container">
             <h1 class="mt-5 mb-4">我的提交记录</h1>

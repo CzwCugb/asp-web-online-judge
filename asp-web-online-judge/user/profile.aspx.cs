@@ -50,14 +50,17 @@ namespace asp_web_online_judge
             Literal content = new Literal();
             if (Request.Cookies["UserInfo"] != null)
             {
+                // 显示当前用户名，并在右侧添加一个返回首页的链接
                 content.Text = $"<a href=\"profile.aspx\">{Request.Cookies["UserInfo"]["Username"]}</a>";
+                content.Text += " <a href=\"home.aspx\" style='margin-left:10px;'>返回</a>";
             }
             else
             {
-                content.Text = "<a href=\"login.aspx\">登录</a>\r\n                <a href=\"register.aspx\">注册</a>";
+                content.Text = "<a href=\"login.aspx\">登录</a> <a href=\"register.aspx\">注册</a>";
             }
             login_register.Controls.Add(content);
         }
+
         private void LoadUserProfile(string UserID)
         {
             string sql = $"SELECT account, email, registrationdate FROM User WHERE id = {UserID}";

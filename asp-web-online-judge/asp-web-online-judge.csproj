@@ -162,6 +162,7 @@
     <Content Include="user\register.aspx" />
     <Content Include="user\result.aspx" />
     <Content Include="user\submissions.aspx" />
+    <Content Include="user\navBar.ascx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -273,6 +274,13 @@
     </Compile>
     <Compile Include="user\submissions.aspx.designer.cs">
       <DependentUpon>submissions.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="user\navBar.ascx.cs">
+      <DependentUpon>navBar.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="user\navBar.ascx.designer.cs">
+      <DependentUpon>navBar.ascx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
