@@ -27,6 +27,24 @@ namespace asp_web_online_judge
             }
         }
 
+        protected void btnLogout_Click(object sender, EventArgs e)
+        {
+            // 清除所有Cookie
+            if (Request.Cookies["AuthToken"] != null)
+            {
+                HttpCookie authCookie = new HttpCookie("AuthToken");
+                authCookie.Expires = DateTime.Now.AddDays(-1);
+                Response.Cookies.Add(authCookie);
+            }
+
+            // 清除Session（如果使用）
+            Session.Clear();
+            Session.Abandon();
+
+            // 跳转到登录页
+            Response.Redirect("login.aspx");
+        }
+
         private void Check_login()
         {
             Literal content = new Literal();
