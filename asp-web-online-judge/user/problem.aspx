@@ -62,7 +62,6 @@
                 OnClientClick="syncCode()" />
         </div>
         <div>
-            debug:
             <asp:Label id="debug_label" runat="server" />
         </div>
     </form>
