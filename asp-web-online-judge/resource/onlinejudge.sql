@@ -435,10 +435,14 @@ INSERT INTO test_case (problem_id, input_data, output_data)
 VALUES (4, '20 30', '50');
 INSERT INTO test_case (problem_id, input_data, output_data)
 VALUES (4, '30 40', '70');
+INSERT INTO test_case (problem_id, input_data, output_data)
+VALUES (4, '100 220', '320');
 INSERT INTO test_case_mapping(problem_id,in_problem_case_id,test_case_id)
-VALUES (4,1,4);
+VALUES (4,1,6);
 INSERT INTO test_case_mapping(problem_id,in_problem_case_id,test_case_id)
-VALUES (4,2,5);
+VALUES (4,2,7);
+INSERT INTO test_case_mapping(problem_id,in_problem_case_id,test_case_id)
+VALUES (4,3,8);
 
 -- 为问题5（小鸟的设备）插入测试用例 
 INSERT INTO test_case (problem_id, input_data, output_data)

@@ -26,13 +26,12 @@ namespace YourNamespace
         {
             if (!IsPostBack)
             {
-                // 1) 先绑定数据
+                // 绑定其他数据
                 BindUsersGrid();
                 BindProblemsGrid();
                 BindCategoriesGrid();
                 BindCompetitionsGrid();
 
-                // 2) 根据 QueryString["view"] 的值，决定 MultiView1 当前显示哪一个视图
                 string viewParam = Request.QueryString["view"];
                 if (!string.IsNullOrEmpty(viewParam))
                 {
@@ -50,19 +49,22 @@ namespace YourNamespace
                         case "competitions":
                             MultiView1.SetActiveView(viewCompetitionOverview);
                             break;
+                        case "testcases":
+                            BindTestCasesGrid();
+                            MultiView1.SetActiveView(viewTestCaseOverview);
+                            break;
                         default:
-                            // 如果view参数无效，则默认到用户管理
                             MultiView1.SetActiveView(viewUserOverview);
                             break;
                     }
                 }
                 else
                 {
-                    // 如果URL里根本没有 ?view=xxx，则默认到“用户管理”
                     MultiView1.SetActiveView(viewUserOverview);
                 }
             }
         }
+
 
         #region 用户列表分页与绑定
         private void BindUsersGrid()
@@ -943,5 +945,266 @@ namespace YourNamespace
             }
         }
         #endregion
+
+        #region 测试用例列表分页与绑定
+        private void BindTestCasesGrid()
+        {
+            int pageIndex = 1;
+            if (!string.IsNullOrEmpty(Request.QueryString["testCasePage"]))
+            {
+                int.TryParse(Request.QueryString["testCasePage"], out pageIndex);
+                if (pageIndex <= 0) pageIndex = 1;
+            }
+
+            string searchTerm = txtTestCaseSearch.Text.Trim();
+
+            int totalRecords = 0;
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                conn.Open();
+                string countSql = "SELECT COUNT(*) FROM test_case";
+                if (!string.IsNullOrEmpty(searchTerm))
+                    countSql += " WHERE input_data LIKE @search OR output_data LIKE @search";
+                MySqlCommand cmdCount = new MySqlCommand(countSql, conn);
+                if (!string.IsNullOrEmpty(searchTerm))
+                    cmdCount.Parameters.AddWithValue("@search", "%" + searchTerm + "%");
+                object obj = cmdCount.ExecuteScalar();
+                totalRecords = (obj == null) ? 0 : Convert.ToInt32(obj);
+                conn.Close();
+            }
+
+            int totalPages = (int)Math.Ceiling((double)totalRecords / PageSize);
+            if (totalPages < 1) totalPages = 1;
+            if (pageIndex > totalPages) pageIndex = totalPages;
+            int offset = (pageIndex - 1) * PageSize;
+
+            DataTable dt = new DataTable();
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                conn.Open();
+                string sql = "SELECT test_case_id, problem_id, input_data, output_data FROM test_case";
+                if (!string.IsNullOrEmpty(searchTerm))
+                    sql += " WHERE input_data LIKE @search OR output_data LIKE @search";
+                sql += " ORDER BY test_case_id LIMIT @offset, @pageSize";
+
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                if (!string.IsNullOrEmpty(searchTerm))
+                    cmd.Parameters.AddWithValue("@search", "%" + searchTerm + "%");
+                cmd.Parameters.AddWithValue("@offset", offset);
+                cmd.Parameters.AddWithValue("@pageSize", PageSize);
+
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                da.Fill(dt);
+                conn.Close();
+            }
+
+            gvTestCases.DataSource = dt;
+            gvTestCases.DataBind();
+
+            // 生成分页链接（带上 view=testcases 参数）
+            List<ListItem> pages = new List<ListItem>();
+            for (int i = 1; i <= totalPages; i++)
+            {
+                string url = "admin.aspx?view=testcases&testCasePage=" + i;
+                ListItem li = new ListItem("第" + i + "页", url);
+                if (i == pageIndex)
+                    li.Selected = true;
+                pages.Add(li);
+            }
+            rptTestCasePagination.DataSource = pages;
+            rptTestCasePagination.DataBind();
+        }
+        #endregion
+
+        #region 点击导航链接
+        protected void lnkTestCases_Click(object sender, EventArgs e)
+        {
+            BindTestCasesGrid(); // 刷新测试用例数据并绑定分页
+            MultiView1.SetActiveView(viewTestCaseOverview);
+        }
+        #endregion
+
+
+        #region 加载测试用例编辑数据
+        private void LoadTestCaseDetail(int testCaseId)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                string query = "SELECT * FROM test_case WHERE test_case_id = @id";
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@id", testCaseId);
+                conn.Open();
+                MySqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    lblTestCaseIdValue.Text = testCaseId.ToString();
+                    txtTestCaseProblemId.Text = reader["problem_id"].ToString();
+                    txtTestCaseInputData.Text = reader["input_data"].ToString();
+                    txtTestCaseOutputData.Text = reader["output_data"].ToString();
+                }
+                conn.Close();
+            }
+            // 同时加载映射表中的 in_problem_case_id（如果存在）
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                string queryMapping = "SELECT in_problem_case_id FROM test_case_mapping WHERE test_case_id = @id";
+                MySqlCommand cmdMapping = new MySqlCommand(queryMapping, conn);
+                cmdMapping.Parameters.AddWithValue("@id", testCaseId);
+                conn.Open();
+                object obj = cmdMapping.ExecuteScalar();
+                if (obj != null && obj != DBNull.Value)
+                    txtInProblemCaseId.Text = obj.ToString();
+                else
+                    txtInProblemCaseId.Text = "";
+                conn.Close();
+            }
+        }
+        #endregion
+
+        #region 保存测试用例
+        protected void btnSaveTestCase_Click(object sender, EventArgs e)
+        {
+            int testCaseId = Convert.ToInt32(lblTestCaseIdValue.Text);
+            int problemId = Convert.ToInt32(txtTestCaseProblemId.Text.Trim());
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                string query = "UPDATE test_case SET problem_id = @problemId, input_data = @input, output_data = @output WHERE test_case_id = @id";
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@problemId", problemId);
+                cmd.Parameters.AddWithValue("@input", txtTestCaseInputData.Text);
+                cmd.Parameters.AddWithValue("@output", txtTestCaseOutputData.Text);
+                cmd.Parameters.AddWithValue("@id", testCaseId);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+            // 更新映射表：先删除原有映射，再插入新的 in_problem_case_id（如果填写了）
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                conn.Open();
+                string delQuery = "DELETE FROM test_case_mapping WHERE test_case_id = @id";
+                MySqlCommand delCmd = new MySqlCommand(delQuery, conn);
+                delCmd.Parameters.AddWithValue("@id", testCaseId);
+                delCmd.ExecuteNonQuery();
+
+                if (!string.IsNullOrEmpty(txtInProblemCaseId.Text.Trim()))
+                {
+                    int inProblemCaseId;
+                    if (int.TryParse(txtInProblemCaseId.Text.Trim(), out inProblemCaseId))
+                    {
+                        string insQuery = "INSERT INTO test_case_mapping (problem_id, in_problem_case_id, test_case_id) VALUES (@problemId, @inProblemCaseId, @id)";
+                        MySqlCommand insCmd = new MySqlCommand(insQuery, conn);
+                        insCmd.Parameters.AddWithValue("@problemId", problemId);
+                        insCmd.Parameters.AddWithValue("@inProblemCaseId", inProblemCaseId);
+                        insCmd.Parameters.AddWithValue("@id", testCaseId);
+                        insCmd.ExecuteNonQuery();
+                    }
+                }
+                conn.Close();
+            }
+            BindTestCasesGrid();
+            MultiView1.SetActiveView(viewTestCaseOverview);
+        }
+        #endregion
+
+        #region 添加新测试用例
+        protected void btnAddTestCase_Click(object sender, EventArgs e)
+        {
+            int problemId = Convert.ToInt32(txtTestCaseProblemId.Text.Trim());
+            int newTestCaseId = 0;
+
+            // 先插入 test_case 表，利用自增主键获得新记录的 ID
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                string query = "INSERT INTO test_case (problem_id, input_data, output_data) VALUES (@problemId, @input, @output)";
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@problemId", problemId);
+                cmd.Parameters.AddWithValue("@input", txtTestCaseInputData.Text);
+                cmd.Parameters.AddWithValue("@output", txtTestCaseOutputData.Text);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                newTestCaseId = Convert.ToInt32(cmd.LastInsertedId);
+                conn.Close();
+            }
+
+            // 如果用户填写了题内测试用例编号，则进行映射记录的插入
+            if (!string.IsNullOrEmpty(txtInProblemCaseId.Text.Trim()))
+            {
+                int inProblemCaseId;
+                if (int.TryParse(txtInProblemCaseId.Text.Trim(), out inProblemCaseId))
+                {
+                    // 检查该题目下是否已有相同编号的测试用例映射（避免重复）
+                    bool exists = false;
+                    using (MySqlConnection conn = new MySqlConnection(connStr))
+                    {
+                        string checkQuery = "SELECT COUNT(*) FROM test_case_mapping WHERE problem_id = @problemId AND in_problem_case_id = @inProblemCaseId";
+                        MySqlCommand cmd = new MySqlCommand(checkQuery, conn);
+                        cmd.Parameters.AddWithValue("@problemId", problemId);
+                        cmd.Parameters.AddWithValue("@inProblemCaseId", inProblemCaseId);
+                        conn.Open();
+                        object countObj = cmd.ExecuteScalar();
+                        int count = (countObj == null) ? 0 : Convert.ToInt32(countObj);
+                        exists = (count > 0);
+                        conn.Close();
+                    }
+                    if (exists)
+                    {
+                        // 已存在则提示错误
+                        Response.Write("<script>alert('该题目已存在编号为 " + inProblemCaseId + " 的测试用例');</script>");
+                    }
+                    else
+                    {
+                        // 没有重复则插入映射记录
+                        using (MySqlConnection conn = new MySqlConnection(connStr))
+                        {
+                            conn.Open();
+                            string insQuery = "INSERT INTO test_case_mapping (problem_id, in_problem_case_id, test_case_id) VALUES (@problemId, @inProblemCaseId, @testCaseId)";
+                            MySqlCommand insCmd = new MySqlCommand(insQuery, conn);
+                            insCmd.Parameters.AddWithValue("@problemId", problemId);
+                            insCmd.Parameters.AddWithValue("@inProblemCaseId", inProblemCaseId);
+                            insCmd.Parameters.AddWithValue("@testCaseId", newTestCaseId);
+                            insCmd.ExecuteNonQuery();
+                            conn.Close();
+                        }
+                    }
+                }
+            }
+
+            BindTestCasesGrid();
+            MultiView1.SetActiveView(viewTestCaseOverview);
+        }
+        #endregion
+
+        #region 删除测试用例
+        private void DeleteTestCase(int testCaseId)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                // 先删除映射关系（如果有）
+                string delMapping = "DELETE FROM test_case_mapping WHERE test_case_id = @id";
+                MySqlCommand cmdMapping = new MySqlCommand(delMapping, conn);
+                cmdMapping.Parameters.AddWithValue("@id", testCaseId);
+                conn.Open();
+                cmdMapping.ExecuteNonQuery();
+                conn.Close();
+
+                // 删除测试用例
+                string query = "DELETE FROM test_case WHERE test_case_id = @id";
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@id", testCaseId);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+        }
+        #endregion
+
+        #region 测试用例搜索按钮事件
+        protected void btnTestCaseSearch_Click(object sender, EventArgs e)
+        {
+            BindTestCasesGrid();
+        }
+        #endregion
+
     }
 }
