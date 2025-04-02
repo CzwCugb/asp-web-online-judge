@@ -1,28 +1,27 @@
-﻿.navbar-fixed-top {
+﻿/* 固定顶部导航栏 */
+.navbar-fixed-top {
     top: 0;
-    display: block;
     position: fixed;
-    box-sizing: border-box;
-    display: table;
-    clear: both;
-    min-height: 50px;
-    margin-bottom: 20px;
-    right: 0;
-    left: 0;
-    border-width: 0 0 1px;
     width: 100%;
-    background-color: ghostwhite;
-    box-shadow: 0 2px 4px 0 var(--cb-color-shadow,rgba(0,0,0,0.16));
+    min-height: 50px;
+    padding: 10px;
+    background-color: #2a2a2a; /* 深灰背景 */
+    color: #fff; /* 白色文字 */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.16);
+    z-index: 1000;
 }
 
-.head-list .navbar-fixed-top{
-    color: darkgray;
+/* 如果 head-list 情况下特殊处理，也设置为白色 */
+.head-list .navbar-fixed-top {
+    color: #fff;
 }
 
+/* 标题下划线 */
 .title-head {
-    border-bottom-color: lightgrey;
+    border-bottom: 1px solid #444; /* 使用较深的灰色 */
 }
 
+/* 居中相关 */
 .container-center {
     text-align: center;
 }
@@ -31,28 +30,28 @@
     display: inline-block;
 }
 
-.text-center{
-    text-align : center;
+.text-center {
+    text-align: center;
 }
 
-.son-a-center{
+.son-a-center {
     display: flex;
     justify-content: center;
 }
 
-.main-page-home {
-    margin-top: 170px !important;
-}
-
+/* 页面主要内容上边距 */
+.main-page-home,
 .main-page {
     margin-top: 170px !important;
 }
 
+/* 页头样式 */
 .header {
     padding: 10px 0;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #444;
 }
 
+/* 基本页面样式 */
 body {
     font-family: Arial, sans-serif !important;
     margin: 0 !important;
@@ -60,27 +59,30 @@ body {
     background-color: #f4f4f4 !important;
 }
 
+/* 导航区域 */
 .nav {
-    margin-bottom: 0px !important;
+    margin: 0 !important;
     text-align: center !important;
-    margin-top: 0px !important;
 }
 
     .nav a {
         margin: 0 10px !important;
         text-decoration: none !important;
-        color: #333 !important;
+        color: #fff !important; /* 导航链接白色显示 */
     }
 
         .nav a:hover {
             color: #007bff !important;
         }
+
     .nav h1 {
         font-size: 2.5rem !important;
         font-weight: 800 !important;
         line-height: 1.4 !important;
-        margin:10px;
+        margin: 10px;
     }
-    .nav.child-center.text-center.son-a-center.head-list{
+
+    /* 组合类（home.aspx、profile.aspx 共同使用） */
+    .nav.child-center.text-center.son-a-center.head-list {
         line-height: 3 !important;
     }

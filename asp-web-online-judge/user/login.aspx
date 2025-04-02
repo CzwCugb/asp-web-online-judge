@@ -1,4 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="login.aspx.cs" Inherits="asp_web_online_judge.login" %>
+<%@ Register Src="~/user/NavBar.ascx" TagPrefix="uc" TagName="NavBar" %>
 
 <!DOCTYPE html>
 
@@ -9,6 +10,8 @@
     <title>登录</title>
 </head>
 <body>
+
+
     <form id="form1" runat="server">
         <div>
             <h2>登录</h2>

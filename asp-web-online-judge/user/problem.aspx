@@ -1,7 +1,6 @@
 ﻿﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="problem.aspx.cs" Inherits="asp_web_online_judge.problem" ValidateRequest="false" %>
 <%@ Register Src="~/user/NavBar.ascx" TagPrefix="uc" TagName="NavBar" %>
 
-
 <!DOCTYPE html>
 <html>
 <head runat="server">
@@ -27,8 +26,9 @@
     <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-        <!-- 导航栏控件 -->
+    <!-- 导航栏控件 -->
     <uc:NavBar ID="navBar" runat="server" />
+    <div style="height: 30px;"></div>
     <form id="form1" runat="server">
         <div class="code-section">
             <h3>代码提交</h3>

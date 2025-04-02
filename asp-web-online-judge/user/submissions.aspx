@@ -1,8 +1,6 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="submissions.aspx.cs" Inherits="asp_web_online_judge.submissions" %>
-<!DOCTYPE html>
 <%@ Register Src="~/user/NavBar.ascx" TagPrefix="uc" TagName="NavBar" %>
-
-
+<!DOCTYPE html>
 <html>
 <head runat="server">
     <meta charset="utf-8" />
@@ -14,7 +12,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css"/>
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #f2f4f8;
+        }
+        /* 主内容容器：白色背景、圆角和阴影 */
+        .main-container {
+            margin-top: 100px; /* 根据需要调整上边距 */
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         .submission-table {
             margin-top: 30px;
@@ -34,12 +40,11 @@
     </style>
 </head>
 <body>
-        <!-- 导航栏控件 -->
+    <!-- 导航栏控件 -->
     <uc:NavBar ID="navBar" runat="server" />
-
     <form id="form1" runat="server">
-        <div class="container">
-            <h1 class="mt-5 mb-4">我的提交记录</h1>
+        <div class="container main-container">
+            <h1 class="mt-3 mb-4">我的提交记录</h1>
             <!-- 提交记录列表由后端生成 -->
             <asp:Literal ID="SubmissionsLiteral" runat="server"></asp:Literal>
         </div>
@@ -82,30 +87,29 @@
           </div>
         </div>
     </form>
-
     <!-- 引入 Bootstrap JS -->
     <script src="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
         // 点击表格行时调用此函数，根据隐藏域中的 JSON 数据填充模态窗口
         function showSubmissionDetails(submissionId) {
             var submissionData = JSON.parse(document.getElementById("data-" + submissionId).value);
-            
+
             document.getElementById("modalProblemTitle").innerText = submissionData.problemTitle;
             document.getElementById("modalSubmissionTime").innerText = submissionData.submissionTime;
             document.getElementById("modalLanguage").innerText = submissionData.language;
             document.getElementById("modalStatus").innerText = submissionData.status;
-            
+
             // 构建测试点详情表格
             var testCasesHtml = "";
-            for(var i = 0; i < submissionData.testCases.length; i++){
+            for (var i = 0; i < submissionData.testCases.length; i++) {
                 var tc = submissionData.testCases[i];
                 testCasesHtml += "<tr><td>" + tc.case_id + "</td><td>" + tc.status + "</td></tr>";
             }
             document.getElementById("modalTestCases").innerHTML = testCasesHtml;
-            
+
             // 显示代码
             document.getElementById("modalCode").innerText = submissionData.code;
-            
+
             // 弹出模态窗口
             var modal = new bootstrap.Modal(document.getElementById('submissionModal'));
             modal.show();

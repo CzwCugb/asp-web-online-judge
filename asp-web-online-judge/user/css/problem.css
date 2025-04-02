@@ -1,4 +1,14 @@
-﻿/* 难度徽章 */
+﻿html {
+    color: rgba(0,0,0,0.1) !important; /* 强制灰色背景 */
+}
+
+body {
+    background-color: #f2f4f8;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+
+/* 难度徽章 */
 .difficulty-badge[data-diff="Easy"] {
     background: #4CAF50;
 }

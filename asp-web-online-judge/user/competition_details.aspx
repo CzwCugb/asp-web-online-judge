@@ -13,8 +13,10 @@
             --primary-color: #4361ee;
             --warning-color: #f59e0b;
         }
-
-        /* 还原题目标题样式 */
+        body {
+            background-color: #f2f4f8;
+        }
+        /* 题目链接样式 */
         .problem-link {
             color: #1a1a1a;
             text-decoration: none;
@@ -24,8 +26,7 @@
             color: var(--primary-color);
             text-decoration: underline;
         }
-
-        /* 还原难度徽章样式 */
+        /* 难度徽章样式 */
         .difficulty-badge {
             font-size: 0.85em;
             min-width: 70px;
@@ -33,10 +34,9 @@
             text-align: center;
             padding: 3px 10px;
             border-radius: 4px;
-            color: white !important; 
+            color: white !important;
         }
-
-        /* 保留优化样式 */
+        /* 其他小样式 */
         .problem-status {
             width: 24px;
             height: 24px;
@@ -45,17 +45,14 @@
             justify-content: center;
             border-radius: 4px;
         }
-
         .problem-status.solved {
             background: #22c55e;
             color: white;
         }
-
         .problem-status.attempted {
             background: var(--warning-color);
             color: white;
         }
-
         .sidebar-btn {
             padding: 12px 20px;
             border-radius: 8px;
@@ -66,35 +63,29 @@
             align-items: center;
             gap: 12px;
         }
-
         .sidebar-btn:hover {
             background-color: #eef2ff;
             border-color: var(--primary-color);
         }
-
         .sidebar-btn.active {
             background-color: var(--primary-color);
             color: white !important;
-            box-shadow: 0 2px 6px rgba(67, 97, 238, 0.2);
+            box-shadow: 0 2px 6px rgba(67,97,238,0.2);
         }
-
         .table thead th {
             font-weight: 600;
             color: #64748b;
             background-color: #f8fafc;
             border-bottom: 2px solid #e2e8f0;
         }
-
         .table td {
             padding: 14px 16px;
             vertical-align: middle;
         }
-
         @media (max-width: 768px) {
             .sidebar {
                 margin-bottom: 24px;
             }
-            
             .table-responsive {
                 border-radius: 8px;
                 border: 1px solid #e2e8f0;

@@ -9,8 +9,24 @@
     <title>比赛列表</title>
     <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet"/>
     <style>
-        .competition-card { transition: transform 0.2s; }
-        .competition-card:hover { transform: translateY(-3px); }
+        body {
+            background-color: #f2f4f8;
+        }
+        /* 模仿 categories 的卡片美化 */
+        .competition-card { 
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: none;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+        .competition-card:hover { 
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .search-box .form-control {
+            border-radius: 30px;
+            padding: 10px 20px;
+        }
     </style>
 </head>
 <body>
@@ -21,7 +37,7 @@
             <h1 class="h3 mb-4">比赛列表</h1>
 
             <!-- 搜索框 -->
-            <div class="row mb-3">
+            <div class="row mb-3 search-box">
                 <div class="col-md-8">
                     <asp:TextBox ID="txtSearch" runat="server" CssClass="form-control" Placeholder="搜索比赛名称"></asp:TextBox>
                 </div>

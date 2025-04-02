@@ -2,26 +2,47 @@
     Inherits="asp_web_online_judge.CategoryDetails" %>
 <%@ Register Src="~/user/NavBar.ascx" TagPrefix="uc" TagName="NavBar" %>
 
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>题单详情</title>
+    <!-- 引入 Bootstrap 样式 -->
     <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet"/>
+    <!-- 如果需要使用 Bootstrap Icons -->
+    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <style>
+        body {
+            background-color: #f2f4f8;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        h1, h3 {
+            color: #333;
+        }
+        /* 难度徽章 */
         .difficulty-badge {
             font-size: 0.85em;
             min-width: 70px;
             display: inline-block;
             text-align: center;
+            border-radius: 12px;
         }
+        /* 表头背景 */
         .grid-header {
-            background-color: #f8f9fa;
+            background-color: #e9ecef;
+        }
+        /* 表格阴影与圆角 */
+        .table {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        a.btn-outline-secondary {
+            border-radius: 30px;
         }
     </style>
 </head>
 <body>
-        <!-- 导航栏控件 -->
+    <!-- 导航栏控件 -->
     <uc:NavBar ID="navBar" runat="server" />
 
     <form id="form1" runat="server">
