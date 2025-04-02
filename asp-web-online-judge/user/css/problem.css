@@ -1,12 +1,26 @@
-﻿html {
-    color: rgba(0,0,0,0.1) !important; /* 强制灰色背景 */
+﻿/* 取消全局文字颜色设置，避免干扰其他样式 */
+/* html {
+    color: rgba(0,0,0,0.1) !important; 
+} */
+
+/* 全局变量，统一背景色为灰色 */
+:root {
+    --primary-color: #2c3e50;
+    --accent-color: #3498db;
+    --success-color: #27ae60;
+    --background-color: #f2f4f8; /* 统一灰色背景 */
+    --text-color: #2c3e50;
 }
 
+/* 全局 body 设置 */
 body {
-    background-color: #f2f4f8;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-color); /* 灰色背景 */
+    color: var(--text-color);
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
 }
-
 
 /* 难度徽章 */
 .difficulty-badge[data-diff="Easy"] {
@@ -25,14 +39,14 @@ body {
     width: contain;
 }
 
-.code-section{
-    width: 80%;
-}
-
+/* 题目描述或其他白色容器 */
 .problem-card {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    background-color: #ffffff; /* 白色容器 */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
 }
 
 .two-column-layout {
@@ -98,30 +112,13 @@ pre {
     color: #333; /* 文字颜色 */
     overflow-x: auto; /* 横向滚动条（内容过长时） */
     white-space: pre-wrap; /* 保留空格，允许换行 */
-
 }
 
-:root {
-    --primary-color: #2c3e50;
-    --accent-color: #3498db;
-    --success-color: #27ae60;
-    --background-color: #f8f9fa;
-    --text-color: #2c3e50;
-}
-
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    line-height: 1.6;
-    margin: 0;
-    padding: 20px;
-}
-
+/* Code 提交区域 */
 .code-section {
     max-width: 1000px;
     margin: 2rem auto;
-    background: white;
+    background: #ffffff; /* 白色背景 */
     border-radius: 12px;
     box-shadow: 0 8px 30px rgba(0,0,0,0.12);
     padding: 2rem;
@@ -132,6 +129,7 @@ body {
         transform: translateY(-2px);
     }
 
+/* 标题样式 */
 h3 {
     color: var(--primary-color);
     font-size: 1.8rem;
@@ -141,13 +139,14 @@ h3 {
     font-weight: 600;
 }
 
+/* 语言选择器 */
 .language-selector {
     padding: 0.8rem 1.2rem;
     border-radius: 8px;
     border: 2px solid #e0e0e0;
     font-family: 'Fira Code', monospace;
     font-size: 1rem;
-    background: white;
+    background: #ffffff;
     width: 200px;
     appearance: none;
     background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2212%22%20height%3D%228%22%20viewBox%3D%220%200%2012%208%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M1%201L6%206L11%201%22%20stroke%3D%22%232c3e50%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E");
@@ -167,6 +166,7 @@ h3 {
         box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
     }
 
+/* CodeMirror 编辑器容器 */
 #codeEditorWrapper {
     margin: 1.5rem 0;
     border-radius: 8px;
@@ -188,10 +188,10 @@ h3 {
 }
 
 .CodeMirror-gutters {
-    /*background-color: #f8f9fa !important;*/
     border-right: 1px solid #eee !important;
 }
 
+/* 提交按钮 */
 .submit-button {
     display: inline-flex;
     align-items: center;
@@ -218,6 +218,7 @@ h3 {
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
+/* 响应式调整 */
 @media (max-width: 768px) {
     .code-section {
         width: 95%;
@@ -228,12 +229,6 @@ h3 {
         min-height: 300px;
         font-size: 14px;
     }
-}
-
-.problem-card {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    border-radius: 8px;
-    overflow: hidden;
 }
 
 .table-hover tbody tr {
